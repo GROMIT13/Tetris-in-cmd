@@ -13,10 +13,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Engine">
+      <UniqueIdentifier>{ff2c6a55-0b13-4409-bf8f-c729f175b1f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine">
+      <UniqueIdentifier>{3f072157-d27e-4a73-8e4d-5f2c435d9607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\DataStructures">
+      <UniqueIdentifier>{ff1f042d-3d06-4f1d-8753-2401432ad173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\DataStructures">
+      <UniqueIdentifier>{b70c1850-4db9-4a3d-b969-3f9d0873a3ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GConsole.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Input.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DataStructures\vec.cpp">
+      <Filter>Source Files\Engine\DataStructures</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\DataStructures\Rect.cpp">
+      <Filter>Source Files\Engine\DataStructures</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\GConsole.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Input.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DataStructures\Rect.hpp">
+      <Filter>Header Files\Engine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\DataStructures\vec.hpp">
+      <Filter>Header Files\Engine\DataStructures</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
