@@ -6,6 +6,11 @@ Vec2::Vec2(int x, int y)
 Vec2::Vec2(const Vec2& other)
 	:x(other.x),y(other.y) {}
 
+Vec2::~Vec2() 
+{
+
+}
+
 Vec2 Vec2::Add(const Vec2& other) const
 {
 	return Vec2(x + other.x, y + other.y);
