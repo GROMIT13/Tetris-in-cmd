@@ -4,5 +4,9 @@
 
 int main()
 {
+	Log log("log.txt");
+	log.Info("test Info");
+	log.Warn("test Warn");
+	log.Error("test Error");
 	return 0;
 }
