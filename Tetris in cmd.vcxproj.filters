@@ -42,6 +42,9 @@
     <ClCompile Include="Engine\DataStructures\Rect.cpp">
       <Filter>Source Files\Engine\DataStructures</Filter>
     </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GConsole.hpp">
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Engine\DataStructures\vec.hpp">
       <Filter>Header Files\Engine\DataStructures</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

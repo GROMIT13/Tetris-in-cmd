@@ -143,6 +143,7 @@
     <ClCompile Include="Engine\DataStructures\vec.cpp" />
     <ClCompile Include="Engine\GConsole.cpp" />
     <ClCompile Include="Engine\Input.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="Engine\DataStructures\vec.hpp" />
     <ClInclude Include="Engine\GConsole.hpp" />
     <ClInclude Include="Engine\Input.hpp" />
+    <ClInclude Include="Log.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
