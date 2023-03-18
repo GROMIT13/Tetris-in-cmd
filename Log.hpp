@@ -2,8 +2,6 @@
 #include <string>
 #include <fstream>
 
-//TO DO: fix - Log classes with same file names may not log evetything in to the file
-
 class Log
 {
 public:
@@ -24,4 +22,5 @@ public:
 	void Error(const std::string& message);
 	void Warn(const std::string& message);
 	void Info(const std::string& message);
+	void ClearFile();
 };

@@ -3,7 +3,7 @@
 Log::Log(const std::string filename)
 	:filename(filename),logLevel(Level::Info)
 {
-	logFile.open(filename);
+	logFile.open(filename, std::ios::app);
 }
 
 Log::~Log()
@@ -32,4 +32,12 @@ void Log::Info(const std::string& message)
 {
 	if (logLevel >= Level::Info)
 		logFile << "[INFO]: " << message << std::endl;
+}
+
+void Log::ClearFile()
+{
+	logFile.close();
+	logFile.open(filename, std::ios::trunc);
+	logFile.close();
+	logFile.open(filename, std::ios::app);
 }
