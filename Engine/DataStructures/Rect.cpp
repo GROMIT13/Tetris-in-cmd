@@ -25,5 +25,3 @@ Rect::~Rect()
 	delete dimension;
 	delete[] buffer;
 }
-
-
