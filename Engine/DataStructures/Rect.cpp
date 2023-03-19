@@ -19,6 +19,27 @@ Rect::Rect(const Rect& other)
 	memcpy(buffer, other.buffer, sizeof(CHAR_INFO) * other.dimension->x * other.dimension->y);
 }
 
+Vec2 Rect::GetPos()
+{
+	return *position;
+}
+
+void Rect::SetPos(int x, int y)
+{
+	position->x = x;
+	position->y = y;
+}
+
+void Rect::SetPos(Vec2 pos)
+{
+	*position = pos;
+}
+
+Vec2 Rect::GetDimension()
+{
+	return *dimension;
+}
+
 Rect::~Rect()
 {
 	delete position;
