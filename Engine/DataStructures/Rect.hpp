@@ -13,9 +13,10 @@ private:
 public:
 	Rect(int x,int y,int width,int height);
 	Rect(const Rect& other);
-	Vec2 GetPos();
-	void SetPos(int x,int y);
-	void SetPos(Vec2 pos);
-	Vec2 GetDimension();
 	~Rect();
+	Vec2 GetPosition();
+	void SetPosition(int x,int y);
+	void SetPosition(Vec2 pos);
+	Vec2 GetDimension();
+	CHAR_INFO* GetBuffer();
 };

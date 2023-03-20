@@ -19,18 +19,25 @@ Rect::Rect(const Rect& other)
 	memcpy(buffer, other.buffer, sizeof(CHAR_INFO) * other.dimension->x * other.dimension->y);
 }
 
-Vec2 Rect::GetPos()
+Rect::~Rect()
+{
+	delete position;
+	delete dimension;
+	delete[] buffer;
+}
+
+Vec2 Rect::GetPosition()
 {
 	return *position;
 }
 
-void Rect::SetPos(int x, int y)
+void Rect::SetPosition(int x, int y)
 {
 	position->x = x;
 	position->y = y;
 }
 
-void Rect::SetPos(Vec2 pos)
+void Rect::SetPosition(Vec2 pos)
 {
 	*position = pos;
 }
@@ -40,9 +47,7 @@ Vec2 Rect::GetDimension()
 	return *dimension;
 }
 
-Rect::~Rect()
+CHAR_INFO* Rect::GetBuffer()
 {
-	delete position;
-	delete dimension;
-	delete[] buffer;
+	return buffer;
 }
