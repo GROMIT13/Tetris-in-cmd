@@ -1,20 +1,20 @@
 #pragma once
 
 #include <Windows.h>
+#include "DataStructures/Rect.hpp"
 
 class GConsole
 {
 private:
-	short m_screenWidth;
-	short m_screenHeight;
-	short m_fontWidth;
-	short m_fontHeight;
-	HANDLE m_hConsole;
-	SMALL_RECT m_consoleRect;
-	COORD m_consoleBufferSzie;
-	CHAR_INFO* m_screenBuffer;
+	Rect* consoleRect;
+	CONSOLE_FONT_INFOEX* consoleFont;
+	HANDLE hConsole;
+	SMALL_RECT consoleDimensions;
+	COORD consoleBufferSzie;
 
 public:
 	GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight);
 	~GConsole();
+	void Update();
+	void Draw(int x, int y);
 };
