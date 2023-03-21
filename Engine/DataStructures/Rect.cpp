@@ -51,3 +51,41 @@ CHAR_INFO* Rect::GetBuffer()
 {
 	return buffer;
 }
+
+void Rect::ClearBuffer()
+{
+	memset(buffer, 0, sizeof(CHAR_INFO) * dimension->x * dimension->y);
+}
+
+void Rect::Draw(int x, int y)
+{
+	if (x < dimension->x && x >= 0 && y < dimension->y && y >= 0)
+	{
+		buffer[y * short(dimension->x) + x].Char.UnicodeChar = CHARACTER_FULL;
+		buffer[y * short(dimension->x) + x].Attributes = FG_COLOR_WHITE;
+	}
+}
+
+void Rect::Draw(int x, int y, unsigned short character)
+{
+	if (x < dimension->x && x >= 0 && y < dimension->y && y >= 0)
+	{
+		buffer[y * short(dimension->x) + x].Char.UnicodeChar = character;
+		buffer[y * short(dimension->x) + x].Attributes = FG_COLOR_WHITE;
+	}
+}
+
+void Rect::Draw(int x, int y, unsigned short character, unsigned short color)
+{
+	if (x < dimension->x && x >= 0 && y < dimension->y && y >= 0)
+	{
+		buffer[y * short(dimension->x) + x].Char.UnicodeChar = character;
+		buffer[y * short(dimension->x) + x].Attributes = color;
+	}
+}
+
+void Rect::UsnecureDraw(int x, int y, unsigned short character, unsigned short color)
+{
+	buffer[y * short(dimension->x) + x].Char.UnicodeChar = character;
+	buffer[y * short(dimension->x) + x].Attributes = color;
+}

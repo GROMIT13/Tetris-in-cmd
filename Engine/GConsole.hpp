@@ -15,6 +15,9 @@ private:
 public:
 	GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight);
 	~GConsole();
-	void Update();
+	void UpdateScreen();
+	void ClearScreen();
 	void Draw(int x, int y);
+	void Draw(int x, int y, unsigned short character);
+	void Draw(int x, int y, unsigned short character, unsigned short color);
 };
