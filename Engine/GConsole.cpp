@@ -6,11 +6,10 @@
 //TO DO: fix - Draw function does not work;
 
 GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight)
+	:Rect(0, 0, screenWidth - 1, screenHeight - 1)
 {
 	Log log("ConsoleLog.txt");
 	log.ClearFile();
-
-	consoleRect = new Rect(0, 0, screenWidth - 1, screenHeight - 1);
 
 	consoleFont = new CONSOLE_FONT_INFOEX;
 	consoleFont->cbSize = sizeof(*consoleFont);
@@ -51,35 +50,14 @@ GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short
 
 GConsole::~GConsole()
 {
-	delete consoleRect;
 	delete consoleFont;
 }
 
 void GConsole::UpdateScreen()
 {
 	WriteConsoleOutput(hConsole,
-					   consoleRect->GetBuffer(),
-					   { short(consoleRect->GetDimension().x),short(consoleRect->GetDimension().y) },
+					   GetBuffer(),
+					   { short(GetDimension().x),short(GetDimension().y) },
 					   { 0,0 },
 						&consoleDimensions);
-}
-
-void GConsole::ClearScreen()
-{
-	consoleRect->ClearBuffer();
-}
-
-void GConsole::Draw(int x, int y)
-{
-	consoleRect->Draw(x, y);
-}
-
-void GConsole::Draw(int x, int y, unsigned short character)
-{
-	consoleRect->Draw(x, y, character);
-}
-
-void GConsole::Draw(int x, int y, unsigned short character, unsigned short color)
-{
-	consoleRect->Draw(x, y, character, color);
 }
