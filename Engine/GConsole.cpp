@@ -6,7 +6,7 @@
 //TO DO: fix - Draw function does not work;
 
 GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight)
-	:Rect(0, 0, screenWidth - 1, screenHeight - 1)
+	:Rect(0, 0, screenWidth, screenHeight)
 {
 	Log log("ConsoleLog.txt");
 	log.ClearFile();
