@@ -15,9 +15,10 @@ class Input
 {
 private:
 	KeyState* keyState;
+	std::vector<char> keyList;
 
 public:
-	Input();
+	Input(std::vector<char> keyList);
 	~Input();
 	void CheckInput();
 	KeyState GetKey(char keyCode);
