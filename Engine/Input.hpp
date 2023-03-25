@@ -10,16 +10,22 @@ struct KeyState
 
 
 //TO DO: Add more input states
-//		 Move Input to singielton class
 class Input
 {
 private:
-	KeyState* keyState;
+	static Input instance;
+	std::vector<KeyState> keyState;
 	std::vector<char> keyList;
 
+	Input() {}
+	void SetKeysImpl(std::vector<char> keyList);
+	void CheckInputImpl();
+	KeyState GetKeyImpl(char keyCode);
+
 public:
-	Input(std::vector<char> keyList);
-	~Input();
-	void CheckInput();
-	KeyState GetKey(char keyCode);
+	Input(const Input&) = delete;
+	static Input& Get();
+	static KeyState GetKey(char keyCode);
+	static void CheckInput();
+	static void SetKeys(std::vector<char> keyList);
 };

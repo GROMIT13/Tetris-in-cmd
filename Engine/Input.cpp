@@ -1,21 +1,18 @@
 #include "Input.hpp"
 #include <Windows.h>
-#include "..\Log.hpp"
 
-Input::Input(std::vector<char> keyList)
-	:keyList(keyList)
+Input Input::instance;
+
+void Input::SetKeysImpl(std::vector<char> keyList)
 {
-	keyState = new KeyState[this->keyList.size()];
-	memset(keyState, 0, sizeof(KeyState) * this->keyList.size());
-
+	this->keyList = keyList;
+	keyState.clear();
+	keyState.reserve(this->keyList.size());
+	for (unsigned int i = 0; i < this->keyList.size(); i++)
+		keyState.push_back({ false,false });
 }
 
-Input::~Input()
-{
-	delete[] keyState;
-}
-
-void Input::CheckInput()
+void Input::CheckInputImpl()
 {
 	for (unsigned int i = 0; i < keyList.size(); i++)
 	{
@@ -32,20 +29,39 @@ void Input::CheckInput()
 	}
 }
 
-KeyState Input::GetKey(char keyCode)
+KeyState Input::GetKeyImpl(char keyCode)
 {
-	Log log("keyLog.txt");
 
 	for (unsigned int i = 0; i < keyList.size(); i++)
 	{
 		if (keyCode == keyList[i])
 		{
-			log.Info("Foud key");
 			return keyState[i];
 		}
 	}
-	log.Info("failed");
+
+	__debugbreak(); //KeyCode not found, delcalre keyCode using "Input::SetKeys()"
 	KeyState exeption = { false,false };
 	return exeption;
-	
+
+}
+
+Input& Input::Get()
+{
+	return instance;
+}
+
+KeyState Input::GetKey(char keyCode)
+{
+	return Get().GetKeyImpl(keyCode);
+}
+
+void Input::CheckInput()
+{
+	Get().CheckInputImpl();
+}
+
+void Input::SetKeys(std::vector<char> keyList)
+{
+	Get().SetKeysImpl(keyList);
 }
