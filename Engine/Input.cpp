@@ -1,8 +1,6 @@
 #include "Input.hpp"
 #include <Windows.h>
 
-Input Input::instance;
-
 void Input::SetKeysImpl(std::vector<char> keyList)
 {
 	this->keyList = keyList;
@@ -46,14 +44,42 @@ KeyState Input::GetKeyImpl(char keyCode)
 
 }
 
+State Input::GetStateImpl(char keyCode)
+{
+
+	for (unsigned int i = 0; i < keyList.size(); i++)
+	{
+		if (keyCode == keyList[i])
+		{
+			if (!keyState[i].present && !keyState[i].past)
+				return State::Null;
+			if (keyState[i].present && !keyState[i].past)
+				return State::Enter;
+			if (keyState[i].present && keyState[i].past)
+				return State::Stay;
+			if (!keyState[i].present && keyState[i].past)
+				return State::Exit;
+		}
+	}
+
+	__debugbreak(); //KeyCode not found, delcalre keyCode using "Input::SetKeys()"
+	return State::Null;
+}
+
 Input& Input::Get()
 {
+	static Input instance;
 	return instance;
 }
 
 KeyState Input::GetKey(char keyCode)
 {
 	return Get().GetKeyImpl(keyCode);
+}
+
+State Input::GetState(char keyCode)
+{
+	return Get().GetStateImpl(keyCode);
 }
 
 void Input::CheckInput()

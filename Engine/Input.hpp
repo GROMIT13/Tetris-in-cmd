@@ -2,18 +2,20 @@
 
 #include <vector>
 
+enum class State
+{
+	Null = 0, Enter, Stay, Exit
+};
+
 struct KeyState
 {
 	bool present;
 	bool past;
 };
 
-
-//TO DO: Add more input states
 class Input
 {
 private:
-	static Input instance;
 	std::vector<KeyState> keyState;
 	std::vector<char> keyList;
 
@@ -21,11 +23,14 @@ private:
 	void SetKeysImpl(std::vector<char> keyList);
 	void CheckInputImpl();
 	KeyState GetKeyImpl(char keyCode);
+	State GetStateImpl(char keyCode);
 
 public:
 	Input(const Input&) = delete;
+	void operator=(Input const&) = delete;
 	static Input& Get();
 	static KeyState GetKey(char keyCode);
+	static State GetState(char keyCode);
 	static void CheckInput();
 	static void SetKeys(std::vector<char> keyList);
 };
