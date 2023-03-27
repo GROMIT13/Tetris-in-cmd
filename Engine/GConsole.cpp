@@ -46,6 +46,8 @@ GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short
 	if (!SetConsoleWindowInfo(hConsole, TRUE, &consoleDimensions)){
 		log.Error("failed to set Console Window Info 2 (console size)");
 	}
+
+	ShowConsoleCursor(false);
 }
 
 GConsole::~GConsole()
@@ -61,3 +63,14 @@ void GConsole::UpdateScreen()
 					   { 0,0 },
 						&consoleDimensions);
 }
+
+void GConsole::ShowConsoleCursor(bool isVisible)
+{
+	CONSOLE_CURSOR_INFO consoleCursorInfo;
+	GetConsoleCursorInfo(hConsole, &consoleCursorInfo);
+	consoleCursorInfo.bVisible = isVisible;
+	SetConsoleCursorInfo(hConsole, &consoleCursorInfo);
+}
+
+//void GConsole::SetTitle(std::string name)
+

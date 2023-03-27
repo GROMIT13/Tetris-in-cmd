@@ -15,4 +15,10 @@ public:
 	GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight);
 	~GConsole();
 	void UpdateScreen();
+	void ShowConsoleCursor(bool isVisible);
+	//TO DO: Implement in cpp file
+	//void SetTitle(std::string title)
+	//{
+	//	SetConsoleTitleA(title.c_str());
+	//}
 };
