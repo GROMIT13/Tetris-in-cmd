@@ -84,6 +84,50 @@ void Rect::Draw(int x, int y, unsigned short character, unsigned short color)
 	}
 }
 
+void Rect::Fill(unsigned short character, unsigned short color)
+{
+	for (int j = 0; j < dimension->y; j++)
+	{
+		for (int i = 0; i < dimension->x; i++)
+		{
+			Rect::UsnecureDraw(i, j, character, color);
+		}
+	}
+}
+
+//TO DO: Refactor
+void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
+{
+	if (x < dimension->x && x + width >= 0 && y < dimension->y && y + height >= 0)
+	{
+		// Bound checking if can draw
+		int Xbegin = 0, Xend = 0;
+		int Ybegin = 0, Yend = 0;
+		if (x < 0)
+			Xbegin = x * -1;
+		if (dimension->x < x + width)
+			Xend = width - (dimension->x - x);
+		if (y < 0)
+			Ybegin = y * -1;
+		if (dimension->y < y + height)
+			Yend = height - (dimension->y - y); // <--wasn't that supposted to be dimension->y
+
+		for (int i = 0 + Ybegin; i < height - Yend; i++)
+		{
+			for (int j = 0 + Xbegin; j < width - Xend; j++)
+			{
+				UsnecureDraw(j + x, i + y, data[i * width + j].Char.UnicodeChar, data[i * width + j].Attributes);
+			}
+		}
+
+	}
+}
+
+//TO DO:
+void Rect::DrawRect(const Rect& rect)
+{
+}
+
 void Rect::UsnecureDraw(int x, int y, unsigned short character, unsigned short color)
 {
 	buffer[y * short(dimension->x) + x].Char.UnicodeChar = character;
