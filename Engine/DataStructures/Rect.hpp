@@ -60,11 +60,11 @@ public:
 	Rect(int x,int y,int width,int height);
 	Rect(const Rect& other);
 	~Rect();
-	Vec2 GetPosition();
+	Vec2 GetPosition() const;
+	Vec2 GetDimension() const;
+	CHAR_INFO* GetBuffer() const;
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
-	Vec2 GetDimension();
-	CHAR_INFO* GetBuffer();
 
 	//Draw Methods
 	void ClearBuffer();

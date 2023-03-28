@@ -26,9 +26,19 @@ Rect::~Rect()
 	delete[] buffer;
 }
 
-Vec2 Rect::GetPosition()
+Vec2 Rect::GetPosition() const
 {
 	return *position;
+}
+
+Vec2 Rect::GetDimension() const
+{
+	return *dimension;
+}
+
+CHAR_INFO* Rect::GetBuffer() const
+{
+	return buffer;
 }
 
 void Rect::SetPosition(int x, int y)
@@ -40,16 +50,6 @@ void Rect::SetPosition(int x, int y)
 void Rect::SetPosition(Vec2 pos)
 {
 	*position = pos;
-}
-
-Vec2 Rect::GetDimension()
-{
-	return *dimension;
-}
-
-CHAR_INFO* Rect::GetBuffer()
-{
-	return buffer;
 }
 
 void Rect::ClearBuffer()
@@ -98,34 +98,47 @@ void Rect::Fill(unsigned short character, unsigned short color)
 //TO DO: Refactor
 void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
 {
-	if (x < dimension->x && x + width >= 0 && y < dimension->y && y + height >= 0)
-	{
 		// Bound checking if can draw
-		int Xbegin = 0, Xend = 0;
-		int Ybegin = 0, Yend = 0;
-		if (x < 0)
-			Xbegin = x * -1;
-		if (dimension->x < x + width)
-			Xend = width - (dimension->x - x);
-		if (y < 0)
-			Ybegin = y * -1;
-		if (dimension->y < y + height)
-			Yend = height - (dimension->y - y); // <--wasn't that supposted to be dimension->y
+		Vec2 begin(0, 0);
+		Vec2 end(width, height);
+		begin.x = (x < 0) ? (x * -1) : 0;
+		end.x = (dimension->x < x + width) ? end.x = dimension->x - x : end.x;
+		begin.y = (y < 0) ? (y * -1) : 0;
+		end.y = (dimension->y < y + height) ? end.y = dimension->y - y : end.y;
 
-		for (int i = 0 + Ybegin; i < height - Yend; i++)
+		//Draw
+		for (int i = begin.y; i < end.y; i++)
 		{
-			for (int j = 0 + Xbegin; j < width - Xend; j++)
+			for (int j = begin.x; j < end.x; j++)
 			{
 				UsnecureDraw(j + x, i + y, data[i * width + j].Char.UnicodeChar, data[i * width + j].Attributes);
 			}
 		}
-
-	}
 }
 
 //TO DO:
 void Rect::DrawRect(const Rect& rect)
 {
+
+	// Bound checking if can draw
+	Vec2 begin(0, 0);
+	Vec2 end(rect.GetDimension().x, rect.GetDimension().y);
+	begin.x = (rect.GetPosition().x < 0) ? (rect.GetPosition().x * -1) : 0;
+	end.x = (dimension->x < rect.GetPosition().x + rect.GetDimension().x) ? end.x = dimension->x - rect.GetPosition().x : end.x;
+	begin.y = (rect.GetDimension().y < 0) ? (rect.GetDimension().y * -1) : 0;
+	end.y = (dimension->y < rect.GetPosition().y + rect.GetDimension().y) ? end.y = dimension->y - rect.GetPosition().y : end.y;
+
+	//Draw
+	for (int i = begin.y; i < end.y; i++)
+	{
+		for (int j = begin.x; j < end.x; j++)
+		{
+			UsnecureDraw(j + rect.GetPosition().x,
+						 i + rect.GetPosition().y,
+						 rect.GetBuffer()[i * rect.GetDimension().x + j].Char.UnicodeChar,
+						 rect.GetBuffer()[i * rect.GetDimension().x + j].Attributes);
+		}
+	}
 }
 
 void Rect::UsnecureDraw(int x, int y, unsigned short character, unsigned short color)
