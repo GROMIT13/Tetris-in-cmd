@@ -5,7 +5,7 @@
 
 //TO DO: fix - Draw function does not work;
 
-GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight)
+GConsole::GConsole(const std::string& title, short screenWidth, short screenHeight, short fontWidth, short fontHeight)
 	:Rect(0, 0, screenWidth, screenHeight)
 {
 	Log log("ConsoleLog.txt");
@@ -48,6 +48,7 @@ GConsole::GConsole(short screenWidth, short screenHeight, short fontWidth, short
 	}
 
 	ShowConsoleCursor(false);
+	SetTitle(title);
 }
 
 GConsole::~GConsole()
@@ -72,5 +73,7 @@ void GConsole::ShowConsoleCursor(bool isVisible)
 	SetConsoleCursorInfo(hConsole, &consoleCursorInfo);
 }
 
-//void GConsole::SetTitle(std::string name)
-
+void GConsole::SetTitle(const std::string& title)
+{
+	SetConsoleTitleA(title.c_str());
+}
