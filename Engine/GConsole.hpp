@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include "DataStructures/Rect.hpp"
+#include <string>
 
 class GConsole : public Rect
 {
@@ -12,13 +13,10 @@ private:
 	COORD consoleBufferSzie;
 
 public:
-	GConsole(short screenWidth, short screenHeight, short fontWidth, short fontHeight);
+	GConsole(const std::string& title,short screenWidth, short screenHeight, short fontWidth, short fontHeight);
 	~GConsole();
 	void UpdateScreen();
 	void ShowConsoleCursor(bool isVisible);
-	//TO DO: Implement in cpp file
-	//void SetTitle(std::string title)
-	//{
-	//	SetConsoleTitleA(title.c_str());
-	//}
+	void SetTitle(const std::string& title);
+	
 };
