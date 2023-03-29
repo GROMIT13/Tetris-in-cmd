@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <string>
 
 class Vec2;
 
@@ -74,6 +75,8 @@ public:
 	void Fill(unsigned short character, unsigned short color);
 	void DrawRect(int x, int y, CHAR_INFO* data, int width, int height);
 	void DrawRect(const Rect& rect);
+	void DrawString(int x, int y, const std::string& string);
+	void DrawString(int x, int y, const std::string& string, unsigned short color);
 
 public:
 	void UsnecureDraw(int x, int y, unsigned short character, unsigned short color);

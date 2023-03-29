@@ -95,7 +95,6 @@ void Rect::Fill(unsigned short character, unsigned short color)
 	}
 }
 
-//TO DO: Refactor
 void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
 {
 		// Bound checking if can draw
@@ -116,7 +115,6 @@ void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
 		}
 }
 
-//TO DO:
 void Rect::DrawRect(const Rect& rect)
 {
 
@@ -138,6 +136,34 @@ void Rect::DrawRect(const Rect& rect)
 						 rect.GetBuffer()[i * rect.GetDimension().x + j].Char.UnicodeChar,
 						 rect.GetBuffer()[i * rect.GetDimension().x + j].Attributes);
 		}
+	}
+}
+
+void Rect::DrawString(int x, int y, const std::string& string)
+{
+	if (y >= dimension->y || y < 0)
+		return;
+
+	int begin = (x < 0) ? (x * -1) : 0;
+	int end = (dimension->x < x + (int)string.length()) ? end = dimension->x - x : string.length();
+
+	for (int i = begin; i < end; i++)
+	{
+		UsnecureDraw(i + x, y, string[i], FG_COLOR_WHITE);
+	}
+}
+
+void Rect::DrawString(int x, int y, const std::string& string, unsigned short color)
+{
+	if (y >= dimension->y || y < 0)
+		return;
+
+	int begin = (x < 0) ? (x * -1) : 0;
+	int end = (dimension->x < x + (int)string.length()) ? end = dimension->x - x : string.length();
+
+	for (int i = begin; i < end; i++)
+	{
+		UsnecureDraw(i + x, y, string[i], color);
 	}
 }
 
