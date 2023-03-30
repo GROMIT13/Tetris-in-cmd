@@ -5,12 +5,14 @@
 class Clock
 {
 private:
-	unsigned int tickRate; // TickRate is converted to micro sedconds
+	unsigned long long tickRate; // TickRate is converted to micro sedconds
 	std::chrono::steady_clock::time_point coutBegin;
 	std::chrono::steady_clock::time_point countEnd;
 public:
-	Clock(unsigned int tickRateMs);
+	static void Wait(unsigned long long ms);
+	Clock(unsigned long long tickRateMs);
 	~Clock();
-	unsigned int GetPassedTime();
-	unsigned int GetPassedTicks();
+	unsigned long long GetPassedTime();
+	unsigned long long GetPassedTicks();
+	unsigned int GetFPS(unsigned int UpdateRateMs);
 };
