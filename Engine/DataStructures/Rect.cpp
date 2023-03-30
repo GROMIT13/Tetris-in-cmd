@@ -95,6 +95,17 @@ void Rect::Fill(unsigned short character, unsigned short color)
 	}
 }
 
+void Rect::FillWithText(const std::string& string, unsigned short color)
+{
+	for (int j = 0; j < dimension->y; j++)
+	{
+		for (int i = 0; i < dimension->x; i++)
+		{
+			Rect::UsnecureDraw(i, j, string[(i + j* dimension->x) % string.length()], color);
+		}
+	}
+}
+
 void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
 {
 		// Bound checking if can draw

@@ -73,6 +73,7 @@ public:
 	void Draw(int x, int y, unsigned short character);
 	void Draw(int x, int y, unsigned short character, unsigned short color);
 	void Fill(unsigned short character, unsigned short color);
+	void FillWithText(const std::string& string, unsigned short color);
 	void DrawRect(int x, int y, CHAR_INFO* data, int width, int height);
 	void DrawRect(const Rect& rect);
 	void DrawString(int x, int y, const std::string& string);
