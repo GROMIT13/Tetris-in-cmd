@@ -14,7 +14,7 @@ void Clock::Wait(unsigned long long ms)
 }
 
 Clock::Clock(unsigned long long tickRateMs)
-	:tickRate(tickRateMs * 1000)
+	:tickRate(tickRateMs * 1000), frameCounter(0), currentFPS(0)
 {
 	coutBegin = std::chrono::high_resolution_clock::now();
 	countEnd = std::chrono::high_resolution_clock::now();
@@ -36,20 +36,15 @@ unsigned long long Clock::GetPassedTicks()
 	return (unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(countEnd - coutBegin).count()) / tickRate;
 }
 
-//TO DO: implement update rate / remove static
+
 unsigned int Clock::GetFPS(unsigned int UpdateRateMs)
 {
-	static unsigned int frameCounter = 0;
-	static unsigned int currentFPS = 0;
-	static std::chrono::steady_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
-	static std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
-
 	currentTime = std::chrono::high_resolution_clock::now();
 	frameCounter++;
-	if (std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTime).count() >= 1000000)
+	if (std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTime).count() >= 1000000.0f * UpdateRateMs/1000.0f)
 	{
 		lastTime = std::chrono::high_resolution_clock::now();
-		currentFPS = frameCounter;
+		currentFPS = frameCounter * 1000.0f/UpdateRateMs;
 		frameCounter = 0;
 	}
 
