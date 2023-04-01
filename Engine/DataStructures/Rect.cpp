@@ -1,8 +1,6 @@
 #include "Rect.hpp"
 #include "vec.hpp"
 
-//TO DO: Check if it really works
-
 Rect::Rect(int x, int y, int width, int height)
 {
 	position = new Vec2(x,y);
@@ -90,7 +88,7 @@ void Rect::Fill(unsigned short character, unsigned short color)
 	{
 		for (int i = 0; i < dimension->x; i++)
 		{
-			Rect::UsnecureDraw(i, j, character, color);
+			Rect::UnsecureDraw(i, j, character, color);
 		}
 	}
 }
@@ -101,7 +99,7 @@ void Rect::FillWithText(const std::string& string, unsigned short color)
 	{
 		for (int i = 0; i < dimension->x; i++)
 		{
-			Rect::UsnecureDraw(i, j, string[(i + j* dimension->x) % string.length()], color);
+			Rect::UnsecureDraw(i, j, string[(i + j* dimension->x) % string.length()], color);
 		}
 	}
 }
@@ -121,14 +119,13 @@ void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
 		{
 			for (int j = begin.x; j < end.x; j++)
 			{
-				UsnecureDraw(j + x, i + y, data[i * width + j].Char.UnicodeChar, data[i * width + j].Attributes);
+				UnsecureDraw(j + x, i + y, data[i * width + j].Char.UnicodeChar, data[i * width + j].Attributes);
 			}
 		}
 }
 
 void Rect::DrawRect(const Rect& rect)
 {
-
 	// Bound checking if can draw
 	Vec2 begin(0, 0);
 	Vec2 end(rect.GetDimension().x, rect.GetDimension().y);
@@ -142,7 +139,7 @@ void Rect::DrawRect(const Rect& rect)
 	{
 		for (int j = begin.x; j < end.x; j++)
 		{
-			UsnecureDraw(j + rect.GetPosition().x,
+			UnsecureDraw(j + rect.GetPosition().x,
 						 i + rect.GetPosition().y,
 						 rect.GetBuffer()[i * rect.GetDimension().x + j].Char.UnicodeChar,
 						 rect.GetBuffer()[i * rect.GetDimension().x + j].Attributes);
@@ -160,7 +157,7 @@ void Rect::DrawString(int x, int y, const std::string& string)
 
 	for (int i = begin; i < end; i++)
 	{
-		UsnecureDraw(i + x, y, string[i], FG_COLOR_WHITE);
+		UnsecureDraw(i + x, y, string[i], FG_COLOR_WHITE);
 	}
 }
 
@@ -174,11 +171,71 @@ void Rect::DrawString(int x, int y, const std::string& string, unsigned short co
 
 	for (int i = begin; i < end; i++)
 	{
-		UsnecureDraw(i + x, y, string[i], color);
+		UnsecureDraw(i + x, y, string[i], color);
 	}
 }
 
-void Rect::UsnecureDraw(int x, int y, unsigned short character, unsigned short color)
+void Rect::DrawLine(int x0, int y0, int x1, int y1)
+{
+	if ((x0 < 0 && x1 < 0) || (y0 < 0 && y1 < 0) || (x0 >= dimension->x && x1 >= dimension->x) || (y0 >= dimension->y && y1 >= dimension->y))
+		return;
+	int dx = abs(x1 - x0);
+	int sx = x0 < x1 ? 1 : -1;
+	int dy = -abs(y1 - y0);
+	int sy = y0 < y1 ? 1 : -1;
+	int error = dx + dy;
+    
+    while (true)
+	{
+		Draw(x0, y0, CHARACTER_FULL, FG_COLOR_WHITE);
+		if (x0 == x1 && y0 == y1) break;
+		int e2 = 2 * error;
+        if (e2 >= dy)
+		{
+			if (x0 == x1) break;
+			error = error + dy;
+			x0 = x0 + sx;
+		}
+        if (e2 <= dx)
+		{
+            if (y0 == y1) break;
+            error = error + dx;
+			y0 = y0 + sy;
+        }
+    }
+}
+
+void Rect::DrawLine(int x0, int y0, int x1, int y1, unsigned short character, unsigned short color)
+{
+	if ((x0 < 0 && x1 < 0) || (y0 < 0 && y1 < 0) || (x0 >= dimension->x && x1 >= dimension->x) || (y0 >= dimension->y && y1 >= dimension->y))
+		return;
+	int dx = abs(x1 - x0);
+	int sx = x0 < x1 ? 1 : -1;
+	int dy = -abs(y1 - y0);
+	int sy = y0 < y1 ? 1 : -1;
+	int error = dx + dy;
+    
+    while (true)
+	{
+		Draw(x0, y0, character, color);
+		if (x0 == x1 && y0 == y1) break;
+		int e2 = 2 * error;
+        if (e2 >= dy)
+		{
+			if (x0 == x1) break;
+			error = error + dy;
+			x0 = x0 + sx;
+		}
+        if (e2 <= dx)
+		{
+            if (y0 == y1) break;
+            error = error + dx;
+			y0 = y0 + sy;
+        }
+    }
+}
+
+void Rect::UnsecureDraw(int x, int y, unsigned short character, unsigned short color)
 {
 	buffer[y * short(dimension->x) + x].Char.UnicodeChar = character;
 	buffer[y * short(dimension->x) + x].Attributes = color;

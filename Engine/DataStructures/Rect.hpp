@@ -78,7 +78,9 @@ public:
 	void DrawRect(const Rect& rect);
 	void DrawString(int x, int y, const std::string& string);
 	void DrawString(int x, int y, const std::string& string, unsigned short color);
+	void DrawLine(int x0, int y0, int x1, int y1);
+	void DrawLine(int x0, int y0, int x1, int y1, unsigned short character, unsigned short color);
 
 public:
-	void UsnecureDraw(int x, int y, unsigned short character, unsigned short color);
+	void UnsecureDraw(int x, int y, unsigned short character, unsigned short color);
 };
