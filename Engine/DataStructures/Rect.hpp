@@ -66,6 +66,7 @@ public:
 	CHAR_INFO* GetBuffer() const;
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
+	void SetDimension(int x, int y);
 
 	//Draw Methods
 	void ClearBuffer();
