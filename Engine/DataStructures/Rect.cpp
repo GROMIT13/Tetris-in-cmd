@@ -50,7 +50,6 @@ void Rect::SetPosition(Vec2 pos)
 	*position = pos;
 }
 
-//TO DO : Add if checks preventing seg fault
 void Rect::SetDimension(int x, int y)
 {
 	dimension->x = x;
