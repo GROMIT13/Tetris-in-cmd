@@ -1,5 +1,4 @@
 #include "Time.hpp"
-#include <Windows.h>
 
 void Clock::Wait(unsigned long long ms)
 {

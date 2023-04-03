@@ -1,7 +1,4 @@
 #include "GConsole.hpp"
-#include "DataStructures/Rect.hpp"
-#include "DataStructures/vec.hpp"
-#include "..\Log.hpp"
 
 //TO DO: fix - Draw function does not work;
 

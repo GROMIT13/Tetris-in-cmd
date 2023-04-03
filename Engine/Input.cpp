@@ -1,5 +1,4 @@
 #include "Input.hpp"
-#include <Windows.h>
 
 void Input::SetKeysImpl(std::vector<char> keyList)
 {

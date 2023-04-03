@@ -1,8 +1,10 @@
 #pragma once
 
 #include <Windows.h>
-#include "DataStructures/Rect.hpp"
 #include <string>
+#include "DataStructures/Rect.hpp"
+#include "DataStructures/vec.hpp"
+#include "..\Log.hpp"
 
 class GConsole : public Rect
 {

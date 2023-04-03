@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <Windows.h>
 
 enum class State
 {
