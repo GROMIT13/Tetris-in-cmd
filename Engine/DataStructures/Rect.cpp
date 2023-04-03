@@ -27,6 +27,14 @@ Rect::~Rect()
 	delete[] buffer;
 }
 
+Rect& Rect::operator=(const Rect& other)
+{
+	this->SetPosition(other.GetPosition().x, other.GetPosition().y);
+	this->SetDimension(other.GetDimension().x, other.GetDimension().y);
+	memcpy(this->GetBuffer(), other.GetBuffer(), sizeof(CHAR_INFO) * this->GetDimension().x * this->GetDimension().y);
+	return *this;
+}
+
 Vec2 Rect::GetPosition() const
 {
 	return *position;
@@ -53,7 +61,6 @@ void Rect::SetPosition(Vec2 pos)
 	*position = pos;
 }
 
-//TO DO : Add if checks preventing seg fault
 void Rect::SetDimension(unsigned int x, unsigned int y)
 {
 	if ((x * y) > bufferSize) {

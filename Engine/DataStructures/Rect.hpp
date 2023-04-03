@@ -64,6 +64,7 @@ public:
 	Rect(int x,int y,int width, int height);
 	Rect(const Rect& other);
 	~Rect();
+	Rect& operator=(const Rect& other);
 	Vec2 GetPosition() const;
 	Vec2 GetDimension() const;
 	CHAR_INFO* GetBuffer() const;
