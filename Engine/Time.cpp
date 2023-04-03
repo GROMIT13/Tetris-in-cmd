@@ -43,7 +43,7 @@ unsigned int Clock::GetFPS(unsigned int UpdateRateMs)
 	if (std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTime).count() >= 1000000.0f * UpdateRateMs/1000.0f)
 	{
 		lastTime = std::chrono::high_resolution_clock::now();
-		currentFPS = frameCounter * 1000.0f/UpdateRateMs;
+		currentFPS = frameCounter * (unsigned int)1000.0f/UpdateRateMs;
 		frameCounter = 0;
 	}
 

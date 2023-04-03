@@ -145,7 +145,8 @@
     <ClCompile Include="Engine\Input.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Time.cpp" />
+    <ClCompile Include="Engine\Time.cpp" />
+    <ClCompile Include="Game\Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\DataStructures\Rect.hpp" />
@@ -153,7 +154,8 @@
     <ClInclude Include="Engine\GConsole.hpp" />
     <ClInclude Include="Engine\Input.hpp" />
     <ClInclude Include="Log.hpp" />
-    <ClInclude Include="Time.hpp" />
+    <ClInclude Include="Engine\Time.hpp" />
+    <ClInclude Include="Game\Tetromino.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -25,6 +25,12 @@
     <Filter Include="Header Files\Engine\DataStructures">
       <UniqueIdentifier>{b70c1850-4db9-4a3d-b969-3f9d0873a3ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{1a8f5b37-2051-46d5-9415-ac19bce8c391}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{9b226f17-5e84-46e2-a261-c89c8a92e9bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -45,6 +51,12 @@
     <ClCompile Include="Log.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Time.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Tetromino.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GConsole.hpp">
@@ -61,6 +73,12 @@
     </ClInclude>
     <ClInclude Include="Log.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Time.hpp">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Tetromino.hpp">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

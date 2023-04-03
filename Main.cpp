@@ -4,16 +4,19 @@
 #include "Log.hpp"
 #include "Engine/GConsole.hpp"
 #include "Engine/Input.hpp"
-
-#define LOG(x) std::cout << x << std::endl;
+#include "Engine/Time.hpp"
+#include "Game/Tetromino.hpp"
 
 int main()
 {
 	GConsole screen("Tetris", 60, 40, 16, 16);
 	Input::SetKeys({ VK_SPACE,VK_UP,VK_DOWN,VK_LEFT,VK_RIGHT,VK_ESCAPE });
-	Rect rect(0, 0, 4, 6);
-	Vec2 position(0, 0);
-	rect.Fill('P',FG_COLOR_LIGHT_YELLOW);
+	Rect rect(5,5, 4, 7);
+	rect.FillWithText("TEXT",FG_COLOR_AQUA);
+	//rect.SetDimension(3, 4);
+	Vec2 position(5, 5);
+	Clock clock(100);
+	Tetromino tetromino(5, 5, Tetromino::Type::T_BLOCK);
 
 	while (!Input::GetKey(VK_ESCAPE).present)
 	{
@@ -25,12 +28,11 @@ int main()
 			position.x--;
 		if (Input::GetState(VK_RIGHT) == State::Enter)
 			position.x++;
-		rect.SetPosition(position);
 
-		screen.DrawRect(rect);
-		//screen.DrawRect(rect.GetPosition().x, rect.GetPosition().y, rect.GetBuffer(), rect.GetDimension().x, rect.GetDimension().y);
+		screen.SetTitle("FPS: " + std::to_string(clock.GetFPS(1000)));
 		screen.UpdateScreen();
 		screen.ClearBuffer();
+		Clock::Wait(10);
 		Input::CheckInput();
 	}
 	return 0;
