@@ -1,6 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include <string>
+#include "vec.hpp"
+#include "..\..\Log.hpp"
 
 class Vec2;
 
@@ -56,9 +58,10 @@ private:
 	Vec2* position;
 	Vec2* dimension;
 	CHAR_INFO* buffer;
+	unsigned int bufferSize;
 
 public:
-	Rect(int x,int y,int width,int height);
+	Rect(int x,int y,int width, int height);
 	Rect(const Rect& other);
 	~Rect();
 	Vec2 GetPosition() const;
@@ -66,7 +69,7 @@ public:
 	CHAR_INFO* GetBuffer() const;
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
-	void SetDimension(int x, int y);
+	void SetDimension(unsigned int x, unsigned int y);
 
 	//Draw Methods
 	void ClearBuffer();
