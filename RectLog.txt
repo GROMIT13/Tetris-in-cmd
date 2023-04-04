@@ -1,2 +1,0 @@
-[WARN]: In file Rect.cpp in line: 61 Failed to set rect dimension
-[WARN]: In file Rect.cpp in line: 61 Failed to set rect dimension
