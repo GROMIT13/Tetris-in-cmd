@@ -20,19 +20,21 @@ Rect::Rect(const Rect& other)
 	memcpy(buffer, other.buffer, sizeof(CHAR_INFO) * other.dimension->x * other.dimension->y);
 }
 
+Rect& Rect::operator=(const Rect& other)
+{
+	if (this == &other)
+		return *this;
+	this->SetPosition(other.GetPosition().x, other.GetPosition().y);
+	this->SetDimension(other.GetDimension().x, other.GetDimension().y);
+	memcpy(this->GetBuffer(), other.GetBuffer(), sizeof(CHAR_INFO) * this->GetDimension().x * this->GetDimension().y);
+	return *this;
+}
+
 Rect::~Rect()
 {
 	delete position;
 	delete dimension;
 	delete[] buffer;
-}
-
-Rect& Rect::operator=(const Rect& other)
-{
-	this->SetPosition(other.GetPosition().x, other.GetPosition().y);
-	this->SetDimension(other.GetDimension().x, other.GetDimension().y);
-	memcpy(this->GetBuffer(), other.GetBuffer(), sizeof(CHAR_INFO) * this->GetDimension().x * this->GetDimension().y);
-	return *this;
 }
 
 Vec2 Rect::GetPosition() const
@@ -118,23 +120,18 @@ void Rect::FillWithText(const std::string& string, unsigned short color)
 	}
 }
 
-void Rect::DrawRect(int x, int y, CHAR_INFO* data, int width, int height)
+void Rect::DrawRect(int x, int y, CHAR_INFO* buffer, int width, int height)
 {
 		// Bound checking if can draw
-		Vec2 begin(0, 0);
-		Vec2 end(width, height);
-		begin.x = (x < 0) ? (x * -1) : 0;
-		end.x = (dimension->x < x + width) ? end.x = dimension->x - x : end.x;
-		begin.y = (y < 0) ? (y * -1) : 0;
-		end.y = (dimension->y < y + height) ? end.y = dimension->y - y : end.y;
+		x = (x < 0) ? (x * -1) : 0;
+		width = (dimension->x < x + width) ? width = dimension->x - x : width;
+		y = (y < 0) ? (y * -1) : 0;
+		height = (dimension->y < y + height) ? height = dimension->y - y : height;
 
 		//Draw
-		for (int i = begin.y; i < end.y; i++)
+		for (int i = y; i < height; i++)
 		{
-			for (int j = begin.x; j < end.x; j++)
-			{
-				UnsecureDraw(j + x, i + y, data[i * width + j].Char.UnicodeChar, data[i * width + j].Attributes);
-			}
+			memcpy(this->buffer + i * this->dimension->x + x, buffer, sizeof(CHAR_INFO) * width);
 		}
 }
 
