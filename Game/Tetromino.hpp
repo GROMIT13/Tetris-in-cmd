@@ -8,7 +8,8 @@ public:
 
 	enum class Type : char
 	{
-		I_BLOCK = 0,
+		NULL_BLOCK = 0,
+		I_BLOCK,
 		O_BLOCK,
 		J_BLOCK,
 		L_BLOCK,
@@ -36,8 +37,10 @@ public:
 private:
 	Type blockType;
 	Sprite* sprite;
+	Rect* rotateRect;
 
 public:
 	Tetromino(int x, int y,Type blockType);
 	void ChangeBlock(Type blockType);
+	void Rotate(unsigned int rotations);
 };

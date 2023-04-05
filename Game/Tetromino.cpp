@@ -1,14 +1,17 @@
 #include "Tetromino.hpp"
 
-Tetromino::Tetromino(int x, int y,Type blockType)
-	:Rect(x,y,4,4),blockType(blockType)
+Tetromino::Tetromino(int x, int y, Type blockType)
+	:Rect(x, y, 4, 4), blockType(blockType)
 {
+	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
 	ChangeBlock(blockType);
 }
 
 void Tetromino::ChangeBlock(Type blockType)
 {
+	if (blockType == Type::NULL_BLOCK)
+		return;
 	this->blockType = blockType;
 	ClearBuffer();
 	switch (blockType)
@@ -31,6 +34,36 @@ void Tetromino::ChangeBlock(Type blockType)
 	log.Error("In file Tetromino.cpp, in line " + std::to_string(__LINE__) + " unknown block type, changed block to I block");
 		break;
 	}
+}
+//TO DO:
+void Tetromino::Rotate(unsigned int rotations)
+{
+	int y = 0;
+	*rotateRect = *this;
+	switch (rotations % 4)
+	{
+	
+	case 1:
+		for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
+		{
+			if (i % rotateRect->GetDimension().x == 0 && i != 0)
+				y++;
+			rotateRect->GetBuffer()[rotateRect->GetDimension().x * (rotateRect->GetDimension().y - 1) + y - (rotateRect->GetDimension().y * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
+		} 
+		break;
+	case 2:
+	case 3:
+		for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
+		{
+			if (i % rotateRect->GetDimension().x == 0 && i != 0)
+				y++;
+			rotateRect->GetBuffer()[(rotateRect->GetDimension().x - 1) - y + (rotateRect->GetDimension().x * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
+		}
+		break;
+	default:
+		break;
+	}
+	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
 }
 
 Tetromino::Sprite::Sprite()
