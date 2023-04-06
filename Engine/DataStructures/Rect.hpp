@@ -83,6 +83,8 @@ public:
 	void FillWithText(const std::string& string, unsigned short color);
 	void DrawRect(int x, int y, CHAR_INFO* data, int width, int height);
 	void DrawRect(const Rect& rect);
+	void DrawRectTransparent(int x, int y, CHAR_INFO* buffer, int width, int height, unsigned short exeptionColor);
+	void DrawRectTransparent(const Rect& rect, unsigned short exeptionColor);
 	void DrawString(int x, int y, const std::string& string);
 	void DrawString(int x, int y, const std::string& string, unsigned short color);
 	void DrawLine(int x0, int y0, int x1, int y1);

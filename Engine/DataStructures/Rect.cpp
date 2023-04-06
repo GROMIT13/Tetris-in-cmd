@@ -165,6 +165,41 @@ void Rect::DrawRect(const Rect& rect)
 	DrawRect(rect.GetPosition().x, rect.GetPosition().y, rect.GetBuffer(), rect.GetDimension().x, rect.GetDimension().y);
 }
 
+void Rect::DrawRectTransparent(int x, int y, CHAR_INFO* buffer, int width, int height, unsigned short exeptionColor)
+{
+	// Bound checking if can draw
+	Vec2 begin(0, 0);
+	Vec2 end(width, height);
+	begin.x = (x < 0) ? (x * -1) : 0;
+	end.x = (dimension->x < x + width) ? end.x = dimension->x - x : end.x;
+	begin.y = (y < 0) ? (y * -1) : 0;
+	end.y = (dimension->y < y + height) ? end.y = dimension->y - y : end.y;
+	/*x = (x < 0) ? (x * -1) : 0;
+	width = (dimension->x < x + width) ? width = dimension->x - x : width;
+	y = (y < 0) ? (y * -1) : 0;
+	height = (dimension->y < y + height) ? height = dimension->y - y : height;*/
+
+	//Draw
+	for (int i = begin.y; i < end.y; i++)
+	{
+		for (int j = begin.x; j < end.x; j++)
+		{
+			if (buffer[i * width + j].Attributes == exeptionColor)
+				continue;
+			UnsecureDraw(j + x, i + y, buffer[i * width + j].Char.UnicodeChar, buffer[i * width + j].Attributes);
+		}
+	}
+	//for (int i = y; i < height; i++)
+	//{
+	//	memcpy(this->buffer + i * this->dimension->x + x, buffer, sizeof(CHAR_INFO) * width);
+	//}
+}
+
+void Rect::DrawRectTransparent(const Rect& rect, unsigned short exeptionColor)
+{
+	DrawRectTransparent(rect.GetPosition().x, rect.GetPosition().y, rect.GetBuffer(), rect.GetDimension().x, rect.GetDimension().y, exeptionColor);
+}
+
 void Rect::DrawString(int x, int y, const std::string& string)
 {
 	DrawString(x, y, string, FG_COLOR_WHITE);
