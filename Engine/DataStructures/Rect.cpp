@@ -74,6 +74,17 @@ void Rect::SetDimension(unsigned int x, unsigned int y)
 	dimension->y = y;
 }
 
+void Rect::Move(int x, int y)
+{
+	position->x += x;
+	position->y += y;
+}
+
+void Rect::Move(Vec2 pos)
+{
+	Move(pos.x, pos.y);
+}
+
 void Rect::ClearBuffer()
 {
 	memset(buffer, 0, sizeof(CHAR_INFO) * dimension->x * dimension->y);
@@ -120,19 +131,33 @@ void Rect::FillWithText(const std::string& string, unsigned short color)
 	}
 }
 
+//TO DO replace with memcopy for performance
 void Rect::DrawRect(int x, int y, CHAR_INFO* buffer, int width, int height)
 {
-		// Bound checking if can draw
-		x = (x < 0) ? (x * -1) : 0;
-		width = (dimension->x < x + width) ? width = dimension->x - x : width;
-		y = (y < 0) ? (y * -1) : 0;
-		height = (dimension->y < y + height) ? height = dimension->y - y : height;
+	// Bound checking if can draw
+	Vec2 begin(0, 0);
+	Vec2 end(width, height);
+	begin.x = (x < 0) ? (x * -1) : 0;
+	end.x = (dimension->x < x + width) ? end.x = dimension->x - x : end.x;
+	begin.y = (y < 0) ? (y * -1) : 0;
+	end.y = (dimension->y < y + height) ? end.y = dimension->y - y : end.y;
+	/*x = (x < 0) ? (x * -1) : 0;
+	width = (dimension->x < x + width) ? width = dimension->x - x : width;
+	y = (y < 0) ? (y * -1) : 0;
+	height = (dimension->y < y + height) ? height = dimension->y - y : height;*/
 
-		//Draw
-		for (int i = y; i < height; i++)
+	//Draw
+	for (int i = begin.y; i < end.y; i++)
+	{
+		for (int j = begin.x; j < end.x; j++)
 		{
-			memcpy(this->buffer + i * this->dimension->x + x, buffer, sizeof(CHAR_INFO) * width);
+			UnsecureDraw(j + x, i + y, buffer[i * width + j].Char.UnicodeChar, buffer[i * width + j].Attributes);
 		}
+	}
+	//for (int i = y; i < height; i++)
+	//{
+	//	memcpy(this->buffer + i * this->dimension->x + x, buffer, sizeof(CHAR_INFO) * width);
+	//}
 }
 
 void Rect::DrawRect(const Rect& rect)

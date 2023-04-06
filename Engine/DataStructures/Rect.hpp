@@ -71,6 +71,8 @@ public:
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
 	void SetDimension(unsigned int x, unsigned int y);
+	void Move(int x, int y);
+	void Move(Vec2 pos);
 
 	//Draw Methods
 	void ClearBuffer();
