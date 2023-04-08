@@ -1,12 +1,14 @@
 #include "Board.hpp"
 
 Board::Board(int x, int y)
-	:Rect(x,y,10,20)
+	:Rect(x,y,10,20),randomizeCounter(0)
 {
-	//srand(time(NULL));
-	//NextTetromino.resize(4);
-	//for (unsigned int i = 0; i < NextTetromino.size(); i++)
-		//NextTetromino.push_back((char)(rand() % 7 + 1));
+	srand((unsigned int)time(NULL));
+	nextTetromino.reserve(14);
+	for (unsigned int i = 0; i < nextTetromino.capacity(); i++)
+		nextTetromino.push_back(i % 7 + 1);
+	std::random_shuffle(nextTetromino.begin(), nextTetromino.begin() + 7);
+	std::random_shuffle(nextTetromino.begin() + 7, nextTetromino.end());
 }
 
 void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
@@ -55,7 +57,11 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 	screen.DrawString(GetPosition().x - 6, GetPosition().y, "CHANGE");
 
 	//Draw Next blocks
-	//screen.DrawRectTransparent(GetPosition().x + GetDimension().x + 3, GetPosition().y, tetromino.GetSprite()->GetSprite((Tetromino::Type)NextTetromino[0]),4,4,FG_COLOR_BLACK);
+	for (size_t i = 0; i < 5; i++)
+	{
+		int size = (Tetromino::Type)nextTetromino[i] == Tetromino::Type::I_BLOCK ? 4 : 3;
+		screen.DrawRectTransparent(GetPosition().x + GetDimension().x + 3, GetPosition().y + 2 + i * 3, tetromino.GetSprite((Tetromino::Type)nextTetromino[i]), size, size, FG_COLOR_BLACK);
+	}
 }
 
 void Board::PlaceBlock(Tetromino& tetromino)
@@ -64,3 +70,14 @@ void Board::PlaceBlock(Tetromino& tetromino)
 	tetromino.Reset(*this);
 }
 
+void Board::MoveNextList()
+{
+	//std::rotate(nextTetromino.begin(), nextTetromino.begin() + 1, nextTetromino.end());
+	nextTetromino.erase(nextTetromino.begin());
+	randomizeCounter = (randomizeCounter + 1) % 7;
+	if (randomizeCounter == 0)
+		for (unsigned int i = 0; i < 7; i++)
+			nextTetromino.push_back(i % 7 + 1);
+
+	std::random_shuffle(nextTetromino.begin() + 7, nextTetromino.end());
+}
