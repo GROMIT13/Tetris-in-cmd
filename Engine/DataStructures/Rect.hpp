@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <string>
+#include <optional>
 #include "vec.hpp"
 #include "..\..\Log.hpp"
 
@@ -68,6 +69,7 @@ public:
 	Vec2 GetPosition() const;
 	Vec2 GetDimension() const;
 	CHAR_INFO* GetBuffer() const;
+	std::optional<CHAR_INFO> GetPixel(int x,int y) const;
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
 	void SetDimension(unsigned int x, unsigned int y);
@@ -81,6 +83,7 @@ public:
 	void Draw(int x, int y, unsigned short character, unsigned short color);
 	void Fill(unsigned short character, unsigned short color);
 	void FillWithText(const std::string& string, unsigned short color);
+	void FillWithText(const std::string& string);
 	void DrawRect(int x, int y, CHAR_INFO* data, int width, int height);
 	void DrawRect(const Rect& rect);
 	void DrawRectTransparent(int x, int y, CHAR_INFO* buffer, int width, int height, unsigned short exeptionColor);

@@ -52,6 +52,16 @@ CHAR_INFO* Rect::GetBuffer() const
 	return buffer;
 }
 
+std::optional<CHAR_INFO> Rect::GetPixel(int x, int y) const
+{
+	if (x < dimension->x && x >= 0 && y < dimension->y && y >= 0)
+	{
+		return buffer[y * short(dimension->x) + x];
+	}
+	return {};
+	//return std::optional<CHAR_INFO>();
+}
+
 void Rect::SetPosition(int x, int y)
 {
 	position->x = x;
@@ -129,6 +139,11 @@ void Rect::FillWithText(const std::string& string, unsigned short color)
 			Rect::UnsecureDraw(i, j, string[(i + j* dimension->x) % string.length()], color);
 		}
 	}
+}
+
+void Rect::FillWithText(const std::string& string)
+{
+	FillWithText(string, FG_COLOR_WHITE);
 }
 
 //TO DO replace with memcopy for performance
