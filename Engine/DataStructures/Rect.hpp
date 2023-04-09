@@ -70,6 +70,7 @@ public:
 	Vec2 GetDimension() const;
 	CHAR_INFO* GetBuffer() const;
 	std::optional<CHAR_INFO> GetPixel(int x,int y) const;
+	std::optional<CHAR_INFO> GetPixel(Vec2 pos) const;
 	void SetPosition(int x,int y);
 	void SetPosition(Vec2 pos);
 	void SetDimension(unsigned int x, unsigned int y);

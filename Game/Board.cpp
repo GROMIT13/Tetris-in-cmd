@@ -3,12 +3,11 @@
 Board::Board(int x, int y)
 	:Rect(x,y,10,20),randomizeCounter(0)
 {
-	srand((unsigned int)time(NULL));
 	nextTetromino.reserve(14);
 	for (unsigned int i = 0; i < nextTetromino.capacity(); i++)
 		nextTetromino.push_back(i % 7 + 1);
-	std::random_shuffle(nextTetromino.begin(), nextTetromino.begin() + 7);
-	std::random_shuffle(nextTetromino.begin() + 7, nextTetromino.end());
+	std::shuffle(nextTetromino.begin(), nextTetromino.begin() + 7, std::random_device());
+	std::shuffle(nextTetromino.begin() + 7, nextTetromino.end(), std::random_device());
 }
 
 void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
@@ -79,5 +78,5 @@ void Board::MoveNextList()
 		for (unsigned int i = 0; i < 7; i++)
 			nextTetromino.push_back(i % 7 + 1);
 
-	std::random_shuffle(nextTetromino.begin() + 7, nextTetromino.end());
+	std::shuffle(nextTetromino.begin() + 7, nextTetromino.end(), std::random_device());
 }

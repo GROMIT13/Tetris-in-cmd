@@ -3,8 +3,8 @@
 #include "../Engine/GConsole.hpp"
 #include "Tetromino.hpp"
 #include <algorithm>
+#include <random>
 #include <vector>
-#include <time.h>
 
 class Tetromino;
 

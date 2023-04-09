@@ -35,35 +35,60 @@ void Tetromino::ChangeBlock(Type blockType)
 		break;
 	}
 }
-//TO DO:
+
 void Tetromino::Rotate(unsigned int rotations)
 {
 	int y = 0;
 	*rotateRect = *this;
-	switch (rotations % 4)
+	for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
 	{
-	
-	case 1:
-		for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
+		switch (rotations % 4)
 		{
+		case 1:
 			if (i % rotateRect->GetDimension().x == 0 && i != 0)
 				y++;
 			rotateRect->GetBuffer()[rotateRect->GetDimension().x * (rotateRect->GetDimension().y - 1) + y - (rotateRect->GetDimension().y * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
-		} 
-		break;
-	case 2:
-	case 3:
-		for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
-		{
+			break;
+		case 2:
+				rotateRect->GetBuffer()[(rotateRect->GetDimension().x * rotateRect->GetDimension().y) - 1 - i] = this->GetBuffer()[i];
+			break;
+		case 3:
 			if (i % rotateRect->GetDimension().x == 0 && i != 0)
 				y++;
 			rotateRect->GetBuffer()[(rotateRect->GetDimension().x - 1) - y + (rotateRect->GetDimension().x * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
+
 	}
 	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
+}
+
+bool Tetromino::DoesFit(int x, int y, const Board& board) const
+{
+	for (int i = 0; i < GetDimension().y; i++)
+	{
+		for (int j = 0; j < GetDimension().x; j++)
+		{
+			if (board.GetPixel(GetPosition().x - board.GetPosition().x + j, GetPosition().y - board.GetPosition().y + i).has_value())
+			{
+
+			}
+		}
+	}
+	return false;
+}
+
+CHAR_INFO* Tetromino::GetSprite(Type blockType) const
+{
+	return sprite->GetSprite(blockType);
+}
+
+void Tetromino::Reset(const Board& board)
+{
+	SetPosition(board.GetPosition().x + board.GetDimension().x / 2 - 1, board.GetPosition().y - 2);
+	ChangeBlock(blockType);
 }
 
 Tetromino::Sprite::Sprite()

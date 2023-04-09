@@ -62,6 +62,11 @@ std::optional<CHAR_INFO> Rect::GetPixel(int x, int y) const
 	//return std::optional<CHAR_INFO>();
 }
 
+std::optional<CHAR_INFO> Rect::GetPixel(Vec2 pos) const
+{
+	return GetPixel(pos.x, pos.y);
+}
+
 void Rect::SetPosition(int x, int y)
 {
 	position->x = x;

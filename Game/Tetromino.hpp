@@ -1,6 +1,9 @@
 #pragma once
 #include "..\Engine\DataStructures\Rect.hpp"
 #include "..\Log.hpp"
+#include "Board.hpp"
+
+class Board;
 
 class Tetromino : public Rect
 {
@@ -41,6 +44,9 @@ private:
 
 public:
 	Tetromino(int x, int y,Type blockType);
+	CHAR_INFO* GetSprite(Type blockType) const;
 	void ChangeBlock(Type blockType);
 	void Rotate(unsigned int rotations);
+	void Reset(const Board& board);
+	bool DoesFit(int x, int y, const Board& board) const;
 };

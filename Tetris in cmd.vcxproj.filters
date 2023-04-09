@@ -57,6 +57,9 @@
     <ClCompile Include="Game\Tetromino.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Board.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\GConsole.hpp">
@@ -78,6 +81,9 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Game\Tetromino.hpp">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Board.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
