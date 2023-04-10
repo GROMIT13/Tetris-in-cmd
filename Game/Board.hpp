@@ -11,6 +11,7 @@ class Tetromino;
 class Board : public Rect
 {
 private:
+	bool hasLost;
 	std::vector<char> nextTetromino;
 	int randomizeCounter;
 public:
