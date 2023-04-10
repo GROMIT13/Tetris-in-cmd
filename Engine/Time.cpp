@@ -16,7 +16,8 @@ Clock::Clock(unsigned long long tickRateMs)
 	:tickRate(tickRateMs * 1000), frameCounter(0), currentFPS(0)
 {
 	coutBegin = std::chrono::high_resolution_clock::now();
-	countEnd = std::chrono::high_resolution_clock::now();
+	currentTime = std::chrono::high_resolution_clock::now();
+	lastTimeHasPassed = std::chrono::high_resolution_clock::now();
 }
 
 Clock::~Clock()
@@ -25,14 +26,14 @@ Clock::~Clock()
 
 unsigned long long Clock::GetPassedTime()
 {
-	countEnd = std::chrono::high_resolution_clock::now();
-	return (unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(countEnd - coutBegin).count());
+	currentTime = std::chrono::high_resolution_clock::now();
+	return (unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(currentTime - coutBegin).count());
 }
 
 unsigned long long Clock::GetPassedTicks()
 {
-	countEnd = std::chrono::high_resolution_clock::now();
-	return (unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(countEnd - coutBegin).count()) / tickRate;
+	currentTime = std::chrono::high_resolution_clock::now();
+	return (unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(currentTime - coutBegin).count()) / tickRate;
 }
 
 
@@ -40,9 +41,9 @@ unsigned int Clock::GetFPS(unsigned int UpdateRateMs)
 {
 	currentTime = std::chrono::high_resolution_clock::now();
 	frameCounter++;
-	if (std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTime).count() >= 1000000.0f * UpdateRateMs/1000.0f)
+	if (std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTimeMeasuredFPS).count() >= 1000000.0f * UpdateRateMs/1000.0f)
 	{
-		lastTime = std::chrono::high_resolution_clock::now();
+		lastTimeMeasuredFPS = std::chrono::high_resolution_clock::now();
 		currentFPS = frameCounter * (unsigned int)1000.0f/UpdateRateMs;
 		frameCounter = 0;
 	}
@@ -50,18 +51,13 @@ unsigned int Clock::GetFPS(unsigned int UpdateRateMs)
 	return currentFPS;
 }
 
-//unsigned long long Clock::GetPassed(unsigned long long tickRateMs)
-//{
-//	static unsigned long long count = 0;
-//	static std::chrono::steady_clock::time_point lastTime = std::chrono::high_resolution_clock::now();
-//	static std::chrono::steady_clock::time_point currentTime = std::chrono::high_resolution_clock::now();
-//
-//	currentTime = std::chrono::high_resolution_clock::now();
-//	if ((unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTime).count()) > tickRateMs * 1000)
-//	{
-//		count++;
-//		lastTime = std::chrono::high_resolution_clock::now();
-//	}
-//	
-//	return count;
-//}
+bool Clock::HasPassed(unsigned long long timeMs)
+{
+	currentTime = std::chrono::high_resolution_clock::now();
+	if ((unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTimeHasPassed).count()) > timeMs * 1000)
+	{
+		lastTimeHasPassed = std::chrono::high_resolution_clock::now();
+		return true;
+	}
+	return false;
+}
