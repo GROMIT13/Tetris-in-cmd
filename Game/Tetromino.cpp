@@ -1,11 +1,19 @@
 #include "Tetromino.hpp"
 
-Tetromino::Tetromino(int x, int y, Type blockType)
-	:Rect(x, y, 4, 4), blockType(blockType)
+Tetromino::Tetromino(int x, int y, unsigned long long updateSpeed, Board& board)
+	:Rect(x, y, 4, 4), updateSpeed(updateSpeed)
 {
 	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
+	blockType = (Tetromino::Type)board.MoveNextList();
 	ChangeBlock(blockType);
+	Reset(board);
+	updateClock = new Clock(updateSpeed);
+}
+
+CHAR_INFO* Tetromino::GetSprite(Type blockType) const
+{
+	return sprite->GetSprite(blockType);
 }
 
 void Tetromino::ChangeBlock(Type blockType)
@@ -65,30 +73,68 @@ void Tetromino::Rotate(unsigned int rotations)
 	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
 }
 
-bool Tetromino::DoesFit(int x, int y, const Board& board) const
+void Tetromino::Reset(const Board& board)
 {
+	SetPosition(board.GetPosition().x + board.GetDimension().x / 2 - 2, board.GetPosition().y + 2);
+	ChangeBlock(blockType);
+}
+
+//NOTE: x and y are tetromino position
+bool Tetromino::DoesFit(int x, int y, const Board& board)
+{
+	bool output = false;
+
 	for (int i = 0; i < GetDimension().y; i++)
 	{
 		for (int j = 0; j < GetDimension().x; j++)
 		{
-			if (board.GetPixel(GetPosition().x - board.GetPosition().x + j, GetPosition().y - board.GetPosition().y + i).has_value())
-			{
+			if (GetPixel(j, i)->Attributes == FG_COLOR_BLACK)
+				continue;
 
-			}
+			Vec2 position(x - board.GetPosition().x + j, y - board.GetPosition().y + i);
+			if (board.GetPixel(position).has_value() && board.GetPixel(position)->Attributes == FG_COLOR_BLACK)
+				output = true;
+			else
+				return false;
 		}
 	}
-	return false;
+	return output;
 }
 
-CHAR_INFO* Tetromino::GetSprite(Type blockType) const
+void Tetromino::Update(Board& board)
 {
-	return sprite->GetSprite(blockType);
-}
+	if (Input::GetState(VK_LEFT) == State::Enter)
+	{
+		if (DoesFit(GetPosition().x - 1, GetPosition().y, board))
+		{
+			Move(-1, 0);
+		}
+	}
 
-void Tetromino::Reset(const Board& board)
-{
-	SetPosition(board.GetPosition().x + board.GetDimension().x / 2 - 1, board.GetPosition().y - 2);
-	ChangeBlock(blockType);
+	if (Input::GetState(VK_RIGHT) == State::Enter)
+	{
+		if (DoesFit(GetPosition().x + 1, GetPosition().y, board))
+		{
+			Move(1, 0);
+		}
+	}
+
+	unsigned long long fallSpeed = updateSpeed;
+	if (Input::GetKey(VK_DOWN).present)
+		fallSpeed /= 15;
+
+	if (updateClock->HasPassed(fallSpeed))
+	{
+		if (DoesFit(GetPosition().x, GetPosition().y + 1, board))
+			Move(0, 1);
+		else
+		{
+			board.PlaceBlock(*this);
+			blockType = (Tetromino::Type)board.MoveNextList();
+			ChangeBlock(blockType);
+		}
+	}
+
 }
 
 Tetromino::Sprite::Sprite()

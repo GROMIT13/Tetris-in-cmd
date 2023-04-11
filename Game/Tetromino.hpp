@@ -1,5 +1,7 @@
 #pragma once
 #include "..\Engine\DataStructures\Rect.hpp"
+#include "..\Engine\Input.hpp"
+#include "..\Engine\Time.hpp"
 #include "..\Log.hpp"
 #include "Board.hpp"
 
@@ -41,12 +43,15 @@ private:
 	Type blockType;
 	Sprite* sprite;
 	Rect* rotateRect;
+	Clock* updateClock;
+	unsigned long long updateSpeed;
 
 public:
-	Tetromino(int x, int y,Type blockType);
+	Tetromino(int x, int y, unsigned long long updateSpeed, Board& board);
 	CHAR_INFO* GetSprite(Type blockType) const;
 	void ChangeBlock(Type blockType);
 	void Rotate(unsigned int rotations);
 	void Reset(const Board& board);
-	bool DoesFit(int x, int y, const Board& board) const;
+	bool DoesFit(int x, int y, const Board& board);
+	void Update(Board& board);
 };
