@@ -38,12 +38,13 @@ public:
 		~Sprite();
 		CHAR_INFO* GetSprite(Type blockType);
 	};
-
 private:
+	Board& board;
 	Type blockType;
 	Sprite* sprite;
 	Rect* rotateRect;
 	Clock* updateClock;
+	Clock* horizontalMovementClock;
 	unsigned long long updateSpeed;
 
 public:
@@ -51,7 +52,9 @@ public:
 	CHAR_INFO* GetSprite(Type blockType) const;
 	void ChangeBlock(Type blockType);
 	void Rotate(unsigned int rotations);
-	void Reset(const Board& board);
-	bool DoesFit(int x, int y, const Board& board);
-	void Update(Board& board);
+	void Reset();
+	bool DoesFit(int x, int y);
+	void Update();
+	//Movement
+	void HoldTetromino();
 };

@@ -1,14 +1,15 @@
 #include "Tetromino.hpp"
 
 Tetromino::Tetromino(int x, int y, unsigned long long updateSpeed, Board& board)
-	:Rect(x, y, 4, 4), updateSpeed(updateSpeed)
+	:Rect(x, y, 4, 4), updateSpeed(updateSpeed),board(board)
 {
 	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
 	blockType = (Tetromino::Type)board.MoveNextList();
 	ChangeBlock(blockType);
-	Reset(board);
+	Reset();
 	updateClock = new Clock(updateSpeed);
+	horizontalMovementClock = new Clock(200);
 }
 
 CHAR_INFO* Tetromino::GetSprite(Type blockType) const
@@ -46,6 +47,9 @@ void Tetromino::ChangeBlock(Type blockType)
 
 void Tetromino::Rotate(unsigned int rotations)
 {
+	if (blockType == Type::O_BLOCK)
+		return;
+
 	int y = 0;
 	*rotateRect = *this;
 	for (int i = 0; i < rotateRect->GetDimension().x * rotateRect->GetDimension().y; i++)
@@ -73,14 +77,14 @@ void Tetromino::Rotate(unsigned int rotations)
 	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
 }
 
-void Tetromino::Reset(const Board& board)
+void Tetromino::Reset()
 {
 	SetPosition(board.GetPosition().x + board.GetDimension().x / 2 - 2, board.GetPosition().y + 2);
 	ChangeBlock(blockType);
 }
 
 //NOTE: x and y are tetromino position
-bool Tetromino::DoesFit(int x, int y, const Board& board)
+bool Tetromino::DoesFit(int x, int y)
 {
 	bool output = false;
 
@@ -101,40 +105,80 @@ bool Tetromino::DoesFit(int x, int y, const Board& board)
 	return output;
 }
 
-void Tetromino::Update(Board& board)
+void Tetromino::Update()
 {
-	if (Input::GetState(VK_LEFT) == State::Enter)
-	{
-		if (DoesFit(GetPosition().x - 1, GetPosition().y, board))
-		{
-			Move(-1, 0);
-		}
-	}
-
-	if (Input::GetState(VK_RIGHT) == State::Enter)
-	{
-		if (DoesFit(GetPosition().x + 1, GetPosition().y, board))
-		{
-			Move(1, 0);
-		}
-	}
-
 	unsigned long long fallSpeed = updateSpeed;
 	if (Input::GetKey(VK_DOWN).present)
 		fallSpeed /= 15;
 
 	if (updateClock->HasPassed(fallSpeed))
 	{
-		if (DoesFit(GetPosition().x, GetPosition().y + 1, board))
+		if (DoesFit(GetPosition().x, GetPosition().y + 1))
 			Move(0, 1);
 		else
 		{
 			board.PlaceBlock(*this);
 			blockType = (Tetromino::Type)board.MoveNextList();
 			ChangeBlock(blockType);
+			board.SetCanHoldTetromino(true);
 		}
 	}
 
+	HoldTetromino();
+
+	if (Input::GetState(VK_LEFT) == State::Enter)
+	{
+		horizontalMovementClock->ResetHasPassed();
+		if (DoesFit(GetPosition().x - 1, GetPosition().y))
+		{
+			Move(-1, 0);
+		}
+	}
+
+	if (Input::GetState(VK_LEFT) == State::Stay && horizontalMovementClock->HasPassed())
+	{
+		if (DoesFit(GetPosition().x - 1, GetPosition().y))
+		{
+			Move(-1, 0);
+		}
+	}
+
+	if (Input::GetState(VK_LEFT) == State::Exit)
+		horizontalMovementClock->ResetHasPassed();
+
+
+	if (Input::GetState(VK_RIGHT) == State::Enter)
+	{
+		if (DoesFit(GetPosition().x + 1, GetPosition().y))
+		{
+			Move(1, 0);
+		}
+	}
+}
+
+void Tetromino::HoldTetromino()
+{
+	if (Input::GetState('C') == State::Enter && board.GetCanHoldTetromino())
+	{
+		Type holdTetromino;
+		holdTetromino = (Tetromino::Type)board.GetHoldTetromino();
+
+		board.SetCanHoldTetromino(false);
+		board.SetHoldTetromino((char)blockType);
+		Reset();
+
+		if (holdTetromino == Tetromino::Type::NULL_BLOCK)
+		{
+			blockType = (Tetromino::Type)board.MoveNextList();
+			ChangeBlock(blockType);
+		}
+		else
+		{
+			blockType = holdTetromino;
+			ChangeBlock(holdTetromino);
+		}
+
+	}
 }
 
 Tetromino::Sprite::Sprite()

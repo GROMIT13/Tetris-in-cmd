@@ -1,7 +1,11 @@
 #include "Board.hpp"
 
 Board::Board(int x, int y)
-	:Rect(x,y,10,24),randomizeCounter(0),hasLost(false)
+	:Rect(x,y,10,24),
+	 randomizeCounter(0),
+	 hasLost(false),
+	 holdTetromino((char)Tetromino::Type::NULL_BLOCK),
+	 canHoldTetromino(true)
 {
 	nextTetromino.reserve(14);
 	for (unsigned int i = 0; i < nextTetromino.capacity(); i++)
@@ -53,7 +57,7 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 	screen.Draw(GetPosition().x + GetDimension().x, GetPosition().y + 21, 9568);
 
 	screen.DrawString(GetPosition().x + GetDimension().x + 2, GetPosition().y + 4, "NEXT");
-	screen.DrawString(GetPosition().x - 7, GetPosition().y + 4, "CHANGE");
+	screen.DrawString(GetPosition().x - 6, GetPosition().y + 4, "HOLD");
 
 	//Draw Next blocks
 	for (size_t i = 0; i < 5; i++)
@@ -61,16 +65,24 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 		int size = (Tetromino::Type)nextTetromino[i] == Tetromino::Type::I_BLOCK ? 4 : 3;
 		screen.DrawRectTransparent(GetPosition().x + GetDimension().x + 2, GetPosition().y + 6 + i * 3, tetromino.GetSprite((Tetromino::Type)nextTetromino[i]), size, size, FG_COLOR_BLACK);
 	}
+
+	//Draw Hold block
+	if ((Tetromino::Type)holdTetromino != Tetromino::Type::NULL_BLOCK)
+	{
+		int size = (Tetromino::Type)holdTetromino == Tetromino::Type::I_BLOCK ? 4 : 3;
+		screen.DrawRectTransparent(GetPosition().x + -6, GetPosition().y + 6, tetromino.GetSprite((Tetromino::Type)holdTetromino), size, size, FG_COLOR_BLACK);
+	}
 }
 
 void Board::PlaceBlock(Tetromino& tetromino)
 {
 	DrawRectTransparent(tetromino.GetPosition().x - GetPosition().x, tetromino.GetPosition().y - GetPosition().y, tetromino.GetBuffer(), tetromino.GetDimension().x, tetromino.GetDimension().y, FG_COLOR_BLACK);
-	tetromino.Reset(*this);
+	tetromino.Reset();
 }
 
-void Board::MoveNextList()
+char Board::MoveNextList()
 {
+	char tetromino = nextTetromino.front();
 	nextTetromino.erase(nextTetromino.begin());
 	randomizeCounter = (randomizeCounter + 1) % 7;
 	if (randomizeCounter == 0)
@@ -78,4 +90,25 @@ void Board::MoveNextList()
 			nextTetromino.push_back(i % 7 + 1);
 
 	std::shuffle(nextTetromino.begin() + 7, nextTetromino.end(), std::random_device());
+	return tetromino;
+}
+
+char Board::GetHoldTetromino()
+{
+	return holdTetromino;
+}
+
+void Board::SetHoldTetromino(char blockType)
+{
+	holdTetromino = blockType;
+}
+
+bool Board::GetCanHoldTetromino()
+{
+	return canHoldTetromino;
+}
+
+void Board::SetCanHoldTetromino(bool canHold)
+{
+	canHoldTetromino = canHold;
 }

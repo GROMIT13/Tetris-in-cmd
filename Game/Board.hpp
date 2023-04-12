@@ -13,10 +13,16 @@ class Board : public Rect
 private:
 	bool hasLost;
 	std::vector<char> nextTetromino;
+	char holdTetromino;
+	bool canHoldTetromino;
 	int randomizeCounter;
 public:
 	Board(int x,int y);
 	void DrawBoard(GConsole& screen, const Tetromino& tetromino);
 	void PlaceBlock(Tetromino& tetromino);
-	void MoveNextList();
+	char MoveNextList();
+	char GetHoldTetromino();
+	void SetHoldTetromino(char blockType);
+	bool GetCanHoldTetromino();
+	void SetCanHoldTetromino(bool canHold);
 };
