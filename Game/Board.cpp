@@ -77,7 +77,7 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 void Board::PlaceBlock(Tetromino& tetromino)
 {
 	DrawRectTransparent(tetromino.GetPosition().x - GetPosition().x, tetromino.GetPosition().y - GetPosition().y, tetromino.GetBuffer(), tetromino.GetDimension().x, tetromino.GetDimension().y, FG_COLOR_BLACK);
-	tetromino.Reset();
+	
 }
 
 char Board::MoveNextList()
@@ -111,4 +111,31 @@ bool Board::GetCanHoldTetromino()
 void Board::SetCanHoldTetromino(bool canHold)
 {
 	canHoldTetromino = canHold;
+}
+
+//Returns true when line is cleared
+bool Board::ClearLine(int row)
+{
+	if (!GetPixel(0, row).has_value())
+		return false;
+
+	for (int i = 0; i < GetDimension().x; i++)
+	{
+		if (GetPixel(i, row).value().Attributes == FG_COLOR_BLACK)
+			return false;
+	}
+	memset(GetBuffer() + row * GetDimension().x, 0, sizeof(CHAR_INFO) * GetDimension().x);
+	memcpy(GetBuffer() + GetDimension().x, GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y - (sizeof(CHAR_INFO) * GetDimension().x * (GetDimension().y - row)));
+	return true;
+}
+
+int Board::ClearLines(int row, int amount)
+{
+	int linesCleared = 0;
+	for (int i = 0; i < amount; i++)
+	{
+		if (ClearLine(row + i))
+			linesCleared++;
+	}
+	return linesCleared;
 }

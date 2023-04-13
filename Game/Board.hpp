@@ -25,4 +25,6 @@ public:
 	void SetHoldTetromino(char blockType);
 	bool GetCanHoldTetromino();
 	void SetCanHoldTetromino(bool canHold);
+	bool ClearLine(int row);
+	int ClearLines(int row, int amount);
 };

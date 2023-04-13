@@ -118,12 +118,13 @@ void Tetromino::Update()
 		else
 		{
 			board.PlaceBlock(*this);
+			board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
+			Reset();
 			blockType = (Tetromino::Type)board.MoveNextList();
 			ChangeBlock(blockType);
 			board.SetCanHoldTetromino(true);
 		}
 	}
-
 	HoldTetromino();
 
 	if (Input::GetState(VK_LEFT) == State::Enter)
