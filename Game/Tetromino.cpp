@@ -160,6 +160,22 @@ void Tetromino::Update()
 
 void Tetromino::DrawTetromino(GConsole& screen)
 {
+	//Calculate tetromino shadow
+	Vec2 position = { GetPosition().x,GetPosition().y + 1 };
+
+	while (DoesFit(GetPosition().x, position.y))
+		position.y++;
+	position.y--;
+	
+	for (int y = 0; y < GetDimension().y; y++)
+	{
+		for (int x = 0; x < GetDimension().x; x++)
+		{
+			if (GetPixel(x, y).value().Attributes != FG_COLOR_BLACK)
+				screen.Draw(position.x + x, position.y + y, CHARACTER_QUARTER, FG_COLOR_GRAY);
+		}
+	}
+	//Draw tetromino
 	screen.DrawRectTransparent(*this, FG_COLOR_BLACK);
 }
 
