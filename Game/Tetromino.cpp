@@ -126,6 +126,7 @@ void Tetromino::Update()
 		}
 	}
 	HoldTetromino();
+	HardDrop();
 
 	if (Input::GetState(VK_LEFT) == State::Enter)
 	{
@@ -157,6 +158,11 @@ void Tetromino::Update()
 	}
 }
 
+void Tetromino::DrawTetromino(GConsole& screen)
+{
+	screen.DrawRectTransparent(*this, FG_COLOR_BLACK);
+}
+
 void Tetromino::HoldTetromino()
 {
 	if (Input::GetState('C') == State::Enter && board.GetCanHoldTetromino())
@@ -179,6 +185,28 @@ void Tetromino::HoldTetromino()
 			ChangeBlock(holdTetromino);
 		}
 
+	}
+}
+
+void Tetromino::HardDrop()
+{
+	if (Input::GetState(VK_SPACE) == State::Enter)
+	{
+		while (true)
+		{
+			if (DoesFit(GetPosition().x, GetPosition().y + 1))
+				Move(0, 1);
+			else
+			{
+				board.PlaceBlock(*this);
+				board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
+				Reset();
+				blockType = (Tetromino::Type)board.MoveNextList();
+				ChangeBlock(blockType);
+				board.SetCanHoldTetromino(true);
+				return;
+			}
+		}	
 	}
 }
 

@@ -55,6 +55,8 @@ public:
 	void Reset();
 	bool DoesFit(int x, int y);
 	void Update();
+	void DrawTetromino(GConsole& screen);
 	//Movement
 	void HoldTetromino();
+	void HardDrop();
 };
