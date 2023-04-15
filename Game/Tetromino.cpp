@@ -1,7 +1,7 @@
 #include "Tetromino.hpp"
 
 Tetromino::Tetromino(int x, int y, unsigned long long updateSpeed, Board& board)
-	:Rect(x, y, 4, 4), updateSpeed(updateSpeed),board(board)
+	:Rect(x, y, 4, 4), updateSpeed(updateSpeed),board(board),rotationState(0)
 {
 	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
@@ -59,40 +59,49 @@ void Tetromino::Rotate(unsigned int rotations)
 		case 1:
 			if (i % rotateRect->GetDimension().x == 0 && i != 0)
 				y++;
-			rotateRect->GetBuffer()[rotateRect->GetDimension().x * (rotateRect->GetDimension().y - 1) + y - (rotateRect->GetDimension().y * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
+			rotateRect->GetBuffer()[(rotateRect->GetDimension().x - 1) - y + (rotateRect->GetDimension().x * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
 			break;
 		case 2:
-				rotateRect->GetBuffer()[(rotateRect->GetDimension().x * rotateRect->GetDimension().y) - 1 - i] = this->GetBuffer()[i];
+			rotateRect->GetBuffer()[(rotateRect->GetDimension().x * rotateRect->GetDimension().y) - 1 - i] = this->GetBuffer()[i];
 			break;
 		case 3:
 			if (i % rotateRect->GetDimension().x == 0 && i != 0)
 				y++;
-			rotateRect->GetBuffer()[(rotateRect->GetDimension().x - 1) - y + (rotateRect->GetDimension().x * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
+			rotateRect->GetBuffer()[rotateRect->GetDimension().x * (rotateRect->GetDimension().y - 1) + y - (rotateRect->GetDimension().y * (i % rotateRect->GetDimension().x))] = this->GetBuffer()[i];
 			break;
 		default:
 			break;
 		}
 
 	}
-	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
+	
+	if (DoesFit(*rotateRect, rotateRect->GetPosition().x, rotateRect->GetPosition().y))
+	{
+		memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
+		rotationState += rotations % 4;
+		rotationState %= 4;
+		return;
+	}
+
 }
 
 void Tetromino::Reset()
 {
 	SetPosition(board.GetPosition().x + board.GetDimension().x / 2 - 2, board.GetPosition().y + 2);
 	ChangeBlock(blockType);
+	rotationState = 0;
 }
 
 //NOTE: x and y are tetromino position
-bool Tetromino::DoesFit(int x, int y)
+bool Tetromino::DoesFit(Rect& tetromino, int x, int y)
 {
 	bool output = false;
-
-	for (int i = 0; i < GetDimension().y; i++)
+	
+	for (int i = 0; i < tetromino.GetDimension().y; i++)
 	{
-		for (int j = 0; j < GetDimension().x; j++)
+		for (int j = 0; j < tetromino.GetDimension().x; j++)
 		{
-			if (GetPixel(j, i)->Attributes == FG_COLOR_BLACK)
+			if (tetromino.GetPixel(j, i)->Attributes == FG_COLOR_BLACK)
 				continue;
 
 			Vec2 position(x - board.GetPosition().x + j, y - board.GetPosition().y + i);
@@ -105,6 +114,11 @@ bool Tetromino::DoesFit(int x, int y)
 	return output;
 }
 
+bool Tetromino::DoesFit(Rect& tetromino, Vec2 position)
+{
+	return DoesFit(tetromino, position.x, position.y);
+}
+
 void Tetromino::Update()
 {
 	unsigned long long fallSpeed = updateSpeed;
@@ -113,7 +127,7 @@ void Tetromino::Update()
 
 	if (updateClock->HasPassed(fallSpeed))
 	{
-		if (DoesFit(GetPosition().x, GetPosition().y + 1))
+		if (DoesFit(*this, GetPosition().x, GetPosition().y + 1))
 			Move(0, 1);
 		else
 		{
@@ -131,7 +145,7 @@ void Tetromino::Update()
 	if (Input::GetState(VK_LEFT) == State::Enter)
 	{
 		horizontalMovementClock->ResetHasPassed();
-		if (DoesFit(GetPosition().x - 1, GetPosition().y))
+		if (DoesFit(*this,GetPosition().x - 1, GetPosition().y))
 		{
 			Move(-1, 0);
 		}
@@ -139,7 +153,7 @@ void Tetromino::Update()
 
 	if (Input::GetState(VK_LEFT) == State::Stay && horizontalMovementClock->HasPassed())
 	{
-		if (DoesFit(GetPosition().x - 1, GetPosition().y))
+		if (DoesFit(*this, GetPosition().x - 1, GetPosition().y))
 		{
 			Move(-1, 0);
 		}
@@ -151,7 +165,7 @@ void Tetromino::Update()
 
 	if (Input::GetState(VK_RIGHT) == State::Enter)
 	{
-		if (DoesFit(GetPosition().x + 1, GetPosition().y))
+		if (DoesFit(*this, GetPosition().x + 1, GetPosition().y))
 		{
 			Move(1, 0);
 		}
@@ -160,10 +174,10 @@ void Tetromino::Update()
 
 void Tetromino::DrawTetromino(GConsole& screen)
 {
-	//Calculate tetromino shadow
+	//Calculate, draw tetromino shadow
 	Vec2 position = { GetPosition().x,GetPosition().y + 1 };
 
-	while (DoesFit(GetPosition().x, position.y))
+	while (DoesFit(*this, GetPosition().x, position.y))
 		position.y++;
 	position.y--;
 	
@@ -210,7 +224,7 @@ void Tetromino::HardDrop()
 	{
 		while (true)
 		{
-			if (DoesFit(GetPosition().x, GetPosition().y + 1))
+			if (DoesFit(*this, GetPosition().x, GetPosition().y + 1))
 				Move(0, 1);
 			else
 			{

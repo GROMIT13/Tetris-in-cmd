@@ -38,6 +38,7 @@ public:
 		~Sprite();
 		CHAR_INFO* GetSprite(Type blockType);
 	};
+	int rotationState;
 private:
 	Board& board;
 	Type blockType;
@@ -53,7 +54,9 @@ public:
 	void ChangeBlock(Type blockType);
 	void Rotate(unsigned int rotations);
 	void Reset();
-	bool DoesFit(int x, int y);
+	bool DoesFit(Rect& tetromino, int x, int y);
+	bool DoesFit(Rect& tetromino, Vec2 position);
+	//bool SRS();
 	void Update();
 	void DrawTetromino(GConsole& screen);
 	//Movement
