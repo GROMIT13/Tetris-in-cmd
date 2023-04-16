@@ -38,6 +38,8 @@ public:
 		~Sprite();
 		CHAR_INFO* GetSprite(Type blockType);
 	};
+
+	//TO DO: Implement SRS
 	int rotationState;
 private:
 	Board& board;
@@ -59,6 +61,7 @@ public:
 	//bool SRS();
 	void Update();
 	void DrawTetromino(GConsole& screen);
+	void IfCantMoveDown();
 	//Movement
 	void HoldTetromino();
 	void HardDrop();

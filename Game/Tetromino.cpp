@@ -130,15 +130,9 @@ void Tetromino::Update()
 		if (DoesFit(*this, GetPosition().x, GetPosition().y + 1))
 			Move(0, 1);
 		else
-		{
-			board.PlaceBlock(*this);
-			board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
-			Reset();
-			blockType = (Tetromino::Type)board.MoveNextList();
-			ChangeBlock(blockType);
-			board.SetCanHoldTetromino(true);
-		}
+			IfCantMoveDown();
 	}
+
 	HoldTetromino();
 	HardDrop();
 
@@ -193,6 +187,19 @@ void Tetromino::DrawTetromino(GConsole& screen)
 	screen.DrawRectTransparent(*this, FG_COLOR_BLACK);
 }
 
+void Tetromino::IfCantMoveDown()
+{
+	int linesCleared = 0;
+	board.PlaceBlock(*this);
+	board.HasLost();
+	linesCleared = board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
+	board.CountScore(linesCleared);
+	Reset();
+	blockType = (Tetromino::Type)board.MoveNextList();
+	ChangeBlock(blockType);
+	board.SetCanHoldTetromino(true);
+}
+
 void Tetromino::HoldTetromino()
 {
 	if (Input::GetState('C') == State::Enter && board.GetCanHoldTetromino())
@@ -228,12 +235,7 @@ void Tetromino::HardDrop()
 				Move(0, 1);
 			else
 			{
-				board.PlaceBlock(*this);
-				board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
-				Reset();
-				blockType = (Tetromino::Type)board.MoveNextList();
-				ChangeBlock(blockType);
-				board.SetCanHoldTetromino(true);
+				IfCantMoveDown();
 				return;
 			}
 		}	
