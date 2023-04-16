@@ -2,10 +2,16 @@
 
 Board::Board(int x, int y)
 	:Rect(x,y,10,24),
-	 randomizeCounter(0),
+	 score(0),
+	 drawScore(0),
+	 level(1),
+	 linesToNextLevel(3),
+	 linesOnThisLevel(0),
+	 linesCleared(0),
 	 hasLost(false),
 	 holdTetromino((char)Tetromino::Type::NULL_BLOCK),
-	 canHoldTetromino(true)
+	 canHoldTetromino(true),
+	 randomizeCounter(0)
 {
 	nextTetromino.reserve(14);
 	for (unsigned int i = 0; i < nextTetromino.capacity(); i++)
@@ -72,12 +78,40 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 		int size = (Tetromino::Type)holdTetromino == Tetromino::Type::I_BLOCK ? 4 : 3;
 		screen.DrawRectTransparent(GetPosition().x + -6, GetPosition().y + 6, tetromino.GetSprite((Tetromino::Type)holdTetromino), size, size, FG_COLOR_BLACK);
 	}
+
+	//Draw Game Stats
+
+	if (drawScore < score)
+		drawScore++;
+
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 4, "SCORE");
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 5, std::to_string(drawScore));
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 7, "LEVEL");
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 8, std::to_string(level));
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 10, "NEXT LEVEL");
+	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 11, std::to_string(linesOnThisLevel) + "/" + std::to_string(linesToNextLevel));
+
 }
 
 void Board::PlaceBlock(Tetromino& tetromino)
 {
 	DrawRectTransparent(tetromino.GetPosition().x - GetPosition().x, tetromino.GetPosition().y - GetPosition().y, tetromino.GetBuffer(), tetromino.GetDimension().x, tetromino.GetDimension().y, FG_COLOR_BLACK);
-	
+}
+
+bool Board::HasLost()
+{
+	for (int y = 0; y < 4; y++)
+	{
+		for (int x = 0; x < GetDimension().x; x++)
+		{
+			if (GetPixel(x, y).value().Attributes != FG_COLOR_BLACK)
+			{
+				hasLost = true;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 char Board::MoveNextList()
@@ -113,6 +147,16 @@ void Board::SetCanHoldTetromino(bool canHold)
 	canHoldTetromino = canHold;
 }
 
+bool Board::GetHasLost()
+{
+	return hasLost;
+}
+
+void Board::SetHasLost(bool hasLost)
+{
+	this->hasLost = hasLost;
+}
+
 //Returns true when line is cleared
 bool Board::ClearLine(int row)
 {
@@ -138,4 +182,17 @@ int Board::ClearLines(int row, int amount)
 			linesCleared++;
 	}
 	return linesCleared;
+}
+
+void Board::CountScore(int linesCleared)
+{
+	switch (linesCleared)
+	{
+	case 1: score += 100 * (unsigned long long)(level); break;
+	case 2: score += 300 * (unsigned long long)(level); break;
+	case 3: score += 500 * (unsigned long long)(level); break;
+	case 4: score += 800 * (unsigned long long)(level); break;
+	default:
+		break;
+	}
 }
