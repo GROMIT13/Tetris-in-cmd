@@ -121,6 +121,9 @@ bool Tetromino::DoesFit(Rect& tetromino, Vec2 position)
 
 void Tetromino::Update()
 {
+	if (board.GetHasLost())
+		return;
+
 	unsigned long long fallSpeed = updateSpeed;
 	if (Input::GetKey(VK_DOWN).present)
 		fallSpeed /= 15;
@@ -168,6 +171,9 @@ void Tetromino::Update()
 
 void Tetromino::DrawTetromino(GConsole& screen)
 {
+	if (board.GetHasLost())
+		return;
+
 	//Calculate, draw tetromino shadow
 	Vec2 position = { GetPosition().x,GetPosition().y + 1 };
 
@@ -191,9 +197,9 @@ void Tetromino::IfCantMoveDown()
 {
 	int linesCleared = 0;
 	board.PlaceBlock(*this);
-	board.HasLost();
 	linesCleared = board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
 	board.CountScore(linesCleared);
+	board.HasLost();
 	Reset();
 	blockType = (Tetromino::Type)board.MoveNextList();
 	ChangeBlock(blockType);
