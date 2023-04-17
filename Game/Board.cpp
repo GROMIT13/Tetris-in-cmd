@@ -1,7 +1,7 @@
 #include "Board.hpp"
 
 Board::Board(int x, int y)
-	:Rect(x,y,10,24),
+	:Rect(x, y, 10, 24),
 	 score(0),
 	 drawScore(0),
 	 level(1),
@@ -12,12 +12,32 @@ Board::Board(int x, int y)
 	 holdTetromino((char)Tetromino::Type::NULL_BLOCK),
 	 canHoldTetromino(true),
 	 randomizeCounter(0)
+
 {
 	nextTetromino.reserve(14);
 	for (unsigned int i = 0; i < nextTetromino.capacity(); i++)
 		nextTetromino.push_back(i % 7 + 1);
 	std::shuffle(nextTetromino.begin(), nextTetromino.begin() + 7, std::random_device());
 	std::shuffle(nextTetromino.begin() + 7, nextTetromino.end(), std::random_device());
+}
+
+//Reset All stats, reroll the nextList, reset Hold block
+void Board::ResetBoard()
+{
+	score = 0;
+	drawScore = 0;
+	level = 1;
+	linesToNextLevel = 3;
+	linesOnThisLevel = 0;
+	linesCleared = 0;
+	hasLost = false;
+	holdTetromino = (char)Tetromino::Type::NULL_BLOCK;
+	canHoldTetromino = true;
+	while (randomizeCounter != 0)
+		MoveNextList();
+	
+	ClearBuffer();
+
 }
 
 void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
@@ -80,16 +100,20 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 	}
 
 	//Draw Game Stats
-
-	if (drawScore < score)
-		drawScore++;
-
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 4, "SCORE");
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 5, std::to_string(drawScore));
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 7, "LEVEL");
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 8, std::to_string(level));
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 10, "NEXT LEVEL");
 	screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 11, std::to_string(linesOnThisLevel) + "/" + std::to_string(linesToNextLevel));
+
+	//Draw lost screen
+	if (hasLost)
+	{
+		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 13, "YOU LOST!",FG_COLOR_LIGHT_RED);
+		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 14, "PRESS R TO RESTART",FG_COLOR_LIGHT_GREEN);
+	}
+
 
 }
 
@@ -196,3 +220,18 @@ void Board::CountScore(int linesCleared)
 		break;
 	}
 }
+
+void Board::Update(Tetromino& tetromino)
+{
+	//Update Visual score
+	if (drawScore < score)
+		drawScore++;
+
+	if (Input::GetState('R') == State::Enter)
+	{
+		ResetBoard();
+		tetromino.Reset();
+		tetromino.ChangeBlock((Tetromino::Type)MoveNextList());
+	}
+}
+

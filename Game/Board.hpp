@@ -26,6 +26,7 @@ private:
 	int randomizeCounter;
 public:
 	Board(int x,int y);
+	void ResetBoard();
 	void DrawBoard(GConsole& screen, const Tetromino& tetromino);
 	void PlaceBlock(Tetromino& tetromino);
 	bool HasLost();
@@ -39,4 +40,5 @@ public:
 	bool ClearLine(int row);
 	int  ClearLines(int row, int amount);
 	void CountScore(int linesCleared);
+	void Update(Tetromino& tetromino);
 };
