@@ -37,8 +37,10 @@ public:
 	void SetCanHoldTetromino(bool canHold);
 	bool GetHasLost();
 	void SetHasLost(bool hasLost);
+	int  GetLevel();
 	bool ClearLine(int row);
 	int  ClearLines(int row, int amount);
 	void CountScore(int linesCleared);
+	void CountLevel(int linesCleared);
 	void Update(Tetromino& tetromino);
 };

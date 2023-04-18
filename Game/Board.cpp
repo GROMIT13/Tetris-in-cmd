@@ -5,7 +5,7 @@ Board::Board(int x, int y)
 	 score(0),
 	 drawScore(0),
 	 level(1),
-	 linesToNextLevel(3),
+	 linesToNextLevel(5),
 	 linesOnThisLevel(0),
 	 linesCleared(0),
 	 hasLost(false),
@@ -27,7 +27,7 @@ void Board::ResetBoard()
 	score = 0;
 	drawScore = 0;
 	level = 1;
-	linesToNextLevel = 3;
+	linesToNextLevel = 5;
 	linesOnThisLevel = 0;
 	linesCleared = 0;
 	hasLost = false;
@@ -181,6 +181,11 @@ void Board::SetHasLost(bool hasLost)
 	this->hasLost = hasLost;
 }
 
+int Board::GetLevel()
+{
+	return level;
+}
+
 //Returns true when line is cleared
 bool Board::ClearLine(int row)
 {
@@ -218,6 +223,17 @@ void Board::CountScore(int linesCleared)
 	case 4: score += 800 * (unsigned long long)(level); break;
 	default:
 		break;
+	}
+}
+
+void Board::CountLevel(int linesCleared)
+{
+	this->linesCleared = linesCleared;
+	linesOnThisLevel += linesCleared;
+	while (linesOnThisLevel >= linesToNextLevel)
+	{
+		linesOnThisLevel -= linesToNextLevel;
+		level++;
 	}
 }
 
