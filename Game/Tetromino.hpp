@@ -40,8 +40,8 @@ public:
 	};
 
 	//TO DO: Implement SRS
-	int rotationState;
 private:
+	int rotationState;
 	Board& board;
 	Type blockType;
 	Sprite* sprite;
@@ -51,11 +51,12 @@ private:
 	unsigned long long updateSpeed;
 
 public:
-	Tetromino(int x, int y, unsigned long long updateSpeed, Board& board);
+	Tetromino(int x, int y, Board& board);
 	CHAR_INFO* GetSprite(Type blockType) const;
 	void ChangeBlock(Type blockType);
 	void Rotate(unsigned int rotations);
 	void Reset();
+	int  CalculateUpdateSpeed();
 	bool DoesFit(Rect& tetromino, int x, int y);
 	bool DoesFit(Rect& tetromino, Vec2 position);
 	//bool SRS();

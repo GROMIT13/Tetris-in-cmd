@@ -1,7 +1,7 @@
 #include "Tetromino.hpp"
 
-Tetromino::Tetromino(int x, int y, unsigned long long updateSpeed, Board& board)
-	:Rect(x, y, 4, 4), updateSpeed(updateSpeed),board(board),rotationState(0)
+Tetromino::Tetromino(int x, int y, Board& board)
+	:Rect(x, y, 4, 4), updateSpeed(800),board(board),rotationState(0)
 {
 	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
@@ -92,6 +92,44 @@ void Tetromino::Reset()
 	rotationState = 0;
 }
 
+int Tetromino::CalculateUpdateSpeed()
+{
+	int newUpdeteSpeed = (int)updateSpeed;
+
+	for (int i = 0; i < board.GetLevel() - 1; i++)
+	{
+		if (i >= 30)
+			return newUpdeteSpeed = 20;
+
+		if (i >= 27){
+			newUpdeteSpeed -= 3; continue;
+		}
+
+		if (i >= 22){
+			newUpdeteSpeed -= 4; continue;
+		}
+
+		if (i >= 16){
+			newUpdeteSpeed -= 5; continue;
+		}
+
+		if (i == 15){
+			newUpdeteSpeed -= 10; continue;
+		}
+
+		if (i == 14){
+			newUpdeteSpeed -= 20; continue;
+		}
+
+		if (i == 13){
+			newUpdeteSpeed -= 40; continue;
+		}
+		newUpdeteSpeed -= 50;
+	}
+
+	return newUpdeteSpeed;
+}
+
 //NOTE: x and y are tetromino position
 bool Tetromino::DoesFit(Rect& tetromino, int x, int y)
 {
@@ -124,7 +162,7 @@ void Tetromino::Update()
 	if (board.GetHasLost())
 		return;
 
-	unsigned long long fallSpeed = updateSpeed;
+	unsigned long long fallSpeed = CalculateUpdateSpeed();
 	if (Input::GetKey(VK_DOWN).present)
 		fallSpeed /= 15;
 
@@ -167,6 +205,13 @@ void Tetromino::Update()
 			Move(1, 0);
 		}
 	}
+
+	if (Input::GetState('Z') == State::Enter)
+		Rotate(3);
+	if (Input::GetState('X') == State::Enter)
+		Rotate(1);
+	if (Input::GetState('A') == State::Enter)
+		Rotate(2);
 }
 
 void Tetromino::DrawTetromino(GConsole& screen)
@@ -199,6 +244,7 @@ void Tetromino::IfCantMoveDown()
 	board.PlaceBlock(*this);
 	linesCleared = board.ClearLines((GetPosition().y - board.GetPosition().y), GetDimension().y);
 	board.CountScore(linesCleared);
+	board.CountLevel(linesCleared);
 	board.HasLost();
 	Reset();
 	blockType = (Tetromino::Type)board.MoveNextList();
