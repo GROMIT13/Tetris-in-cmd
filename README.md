@@ -2,7 +2,8 @@
 
 Recreation of modern tetris, where game is displayed in console.
 
-# Controlls:
+**Controlls**
+```
 |←| - move left
 |→| - move right
 |↓| - soft drop
@@ -10,3 +11,4 @@ Recreation of modern tetris, where game is displayed in console.
 |X| or |↑| - rotate clockwise
 |Z| - rotate counterclockwise
 |C| - hold tetromino
+```
