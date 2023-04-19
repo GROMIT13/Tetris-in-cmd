@@ -1,6 +1,6 @@
 # Tetris-in-cmd
 
-Recreation of modern tetris, where game is displayed in console.
+Recreation of modern tetris, displayed in console.
 
 **Controlls**
 ```
