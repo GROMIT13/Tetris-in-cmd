@@ -1,15 +1,18 @@
 #include "Tetromino.hpp"
 
+std::vector<Vec2> Tetromino::JLZST_wallkickData;
+std::vector<Vec2> Tetromino::I_wallkickData;
+
 Tetromino::Tetromino(int x, int y, Board& board)
 	:Rect(x, y, 4, 4), updateSpeed(800),board(board),rotationState(0)
 {
+	InitSRS();
 	rotateRect = new Rect(x,y,4,4);
 	sprite = new Sprite;
 	blockType = (Tetromino::Type)board.MoveNextList();
 	ChangeBlock(blockType);
 	Reset();
 	updateClock = new Clock(updateSpeed);
-	horizontalMovementClock = new Clock(200);
 }
 
 CHAR_INFO* Tetromino::GetSprite(Type blockType) const
@@ -77,11 +80,12 @@ void Tetromino::Rotate(unsigned int rotations)
 	
 	if (DoesFit(*rotateRect, rotateRect->GetPosition().x, rotateRect->GetPosition().y))
 	{
-		memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
-		rotationState += rotations % 4;
-		rotationState %= 4;
+		Vec2 noOffset(0, 0);
+		IfRotationFits(rotations,noOffset);
 		return;
 	}
+
+	SRS(rotations);
 
 }
 
@@ -134,7 +138,7 @@ int Tetromino::CalculateUpdateSpeed()
 bool Tetromino::DoesFit(Rect& tetromino, int x, int y)
 {
 	bool output = false;
-	
+
 	for (int i = 0; i < tetromino.GetDimension().y; i++)
 	{
 		for (int j = 0; j < tetromino.GetDimension().x; j++)
@@ -157,61 +161,144 @@ bool Tetromino::DoesFit(Rect& tetromino, Vec2 position)
 	return DoesFit(tetromino, position.x, position.y);
 }
 
+void Tetromino::SRS(int rotations)
+{
+	if ((rotations % 4) == 2)
+		return;
+	
+	std::vector<Vec2>* wallkickData;
+	if (blockType == Type::I_BLOCK)
+		wallkickData = &I_wallkickData;
+	else
+		wallkickData = &JLZST_wallkickData;
+
+	int newRotationState = (rotationState + rotations) % 4;
+	for (int i = 0; i < 4; i++)
+	{
+		if (rotationState == 0 && newRotationState == 3 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 7]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 7]);
+		if (rotationState == 0 && newRotationState == 1 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 0]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 0]);
+		if (rotationState == 1 && newRotationState == 0 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 1]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 1]);
+		if (rotationState == 1 && newRotationState == 2 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 2]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 2]);
+		if (rotationState == 2 && newRotationState == 1 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 3]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 3]);
+		if (rotationState == 2 && newRotationState == 3 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 4]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 4]);
+		if (rotationState == 3 && newRotationState == 2 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 5]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 5]);
+		if (rotationState == 3 && newRotationState == 0 && DoesFit(*rotateRect, rotateRect->GetPosition() + (*wallkickData)[i + 4 * 6]))
+			IfRotationFits(rotations, (*wallkickData)[i + 4 * 6]);
+	}
+}
+
+void Tetromino::InitSRS()
+{
+	static bool isInitailized = false;
+
+	if (isInitailized)
+		return;
+	isInitailized = true;
+
+	JLZST_wallkickData.reserve(4 * 8);
+	I_wallkickData.reserve(4 * 8);
+	//Filing JLZST_wallkickData
+	//0->1
+	JLZST_wallkickData.push_back(Vec2(-1, 0));
+	JLZST_wallkickData.push_back(Vec2(-1, -1));
+	JLZST_wallkickData.push_back(Vec2(0, 2));
+	JLZST_wallkickData.push_back(Vec2(-1, 2));
+	//1->0
+	JLZST_wallkickData.push_back(Vec2(1, 0));
+	JLZST_wallkickData.push_back(Vec2(1, 1));
+	JLZST_wallkickData.push_back(Vec2(0, -2));
+	JLZST_wallkickData.push_back(Vec2(1, -2));
+	//1->2
+	JLZST_wallkickData.push_back(Vec2(1, 0));
+	JLZST_wallkickData.push_back(Vec2(1, 1));
+	JLZST_wallkickData.push_back(Vec2(0, -2));
+	JLZST_wallkickData.push_back(Vec2(1, -2));
+	//2->1
+	JLZST_wallkickData.push_back(Vec2(-1, 0));
+	JLZST_wallkickData.push_back(Vec2(-1, -1));
+	JLZST_wallkickData.push_back(Vec2(0, 2));
+	JLZST_wallkickData.push_back(Vec2(-1, 2));
+	//2->3
+	JLZST_wallkickData.push_back(Vec2(1, 0));
+	JLZST_wallkickData.push_back(Vec2(1, -1));
+	JLZST_wallkickData.push_back(Vec2(0, 2));
+	JLZST_wallkickData.push_back(Vec2(1, 2));
+	//3->2
+	JLZST_wallkickData.push_back(Vec2(-1, 0));
+	JLZST_wallkickData.push_back(Vec2(-1, 1));
+	JLZST_wallkickData.push_back(Vec2(0, -2));
+	JLZST_wallkickData.push_back(Vec2(-1, -2));
+	//3->0
+	JLZST_wallkickData.push_back(Vec2(-1, 0));
+	JLZST_wallkickData.push_back(Vec2(-1, 1));
+	JLZST_wallkickData.push_back(Vec2(0, -2));
+	JLZST_wallkickData.push_back(Vec2(-1, -2));
+	//0->3
+	JLZST_wallkickData.push_back(Vec2(1, 0));
+	JLZST_wallkickData.push_back(Vec2(1, -1));
+	JLZST_wallkickData.push_back(Vec2(0, 2));
+	JLZST_wallkickData.push_back(Vec2(1, 2));
+
+	//Filing I_wallkickData
+	//0->1
+	I_wallkickData.push_back(Vec2(-2, 0));
+	I_wallkickData.push_back(Vec2(1, 0));
+	I_wallkickData.push_back(Vec2(-2, 1));
+	I_wallkickData.push_back(Vec2(1, -2));
+	//1->0
+	I_wallkickData.push_back(Vec2(2, 0));
+	I_wallkickData.push_back(Vec2(-1, 0));
+	I_wallkickData.push_back(Vec2(2, -1));
+	I_wallkickData.push_back(Vec2(-1, 2));
+	//1->2	
+	I_wallkickData.push_back(Vec2(-1, 0));
+	I_wallkickData.push_back(Vec2(2, 0));
+	I_wallkickData.push_back(Vec2(-1, -2));
+	I_wallkickData.push_back(Vec2(2, 1));
+	//2->1
+	I_wallkickData.push_back(Vec2(1, 0));
+	I_wallkickData.push_back(Vec2(-2, 0));
+	I_wallkickData.push_back(Vec2(1, 2));
+	I_wallkickData.push_back(Vec2(-2, -1));
+	//2->3	
+	I_wallkickData.push_back(Vec2(2, 0));
+	I_wallkickData.push_back(Vec2(-1, 0));
+	I_wallkickData.push_back(Vec2(2, -1));
+	I_wallkickData.push_back(Vec2(-1, 2));
+	//3->2	
+	I_wallkickData.push_back(Vec2(-2, 0));
+	I_wallkickData.push_back(Vec2(1, 0));
+	I_wallkickData.push_back(Vec2(-2, 1));
+	I_wallkickData.push_back(Vec2(1, -2));
+	//3->0	
+	I_wallkickData.push_back(Vec2(1, 0));
+	I_wallkickData.push_back(Vec2(-2, 0));
+	I_wallkickData.push_back(Vec2(1, 2));
+	I_wallkickData.push_back(Vec2(-2, -1));
+	//0->3
+	I_wallkickData.push_back(Vec2(-1, 0));
+	I_wallkickData.push_back(Vec2(2, 0));
+	I_wallkickData.push_back(Vec2(-1, -2));
+	I_wallkickData.push_back(Vec2(2, 1));
+}
+
 void Tetromino::Update()
 {
 	if (board.GetHasLost())
 		return;
 
-	unsigned long long fallSpeed = CalculateUpdateSpeed();
-	if (Input::GetKey(VK_DOWN).present)
-		fallSpeed /= 15;
-
-	if (updateClock->HasPassed(fallSpeed))
-	{
-		if (DoesFit(*this, GetPosition().x, GetPosition().y + 1))
-			Move(0, 1);
-		else
-			IfCantMoveDown();
-	}
-
+	MoveVertically();
+	MoveHorizontally();
 	HoldTetromino();
 	HardDrop();
-
-	if (Input::GetState(VK_LEFT) == State::Enter)
-	{
-		horizontalMovementClock->ResetHasPassed();
-		if (DoesFit(*this,GetPosition().x - 1, GetPosition().y))
-		{
-			Move(-1, 0);
-		}
-	}
-
-	if (Input::GetState(VK_LEFT) == State::Stay && horizontalMovementClock->HasPassed())
-	{
-		if (DoesFit(*this, GetPosition().x - 1, GetPosition().y))
-		{
-			Move(-1, 0);
-		}
-	}
-
-	if (Input::GetState(VK_LEFT) == State::Exit)
-		horizontalMovementClock->ResetHasPassed();
-
-
-	if (Input::GetState(VK_RIGHT) == State::Enter)
-	{
-		if (DoesFit(*this, GetPosition().x + 1, GetPosition().y))
-		{
-			Move(1, 0);
-		}
-	}
-
-	if (Input::GetState('Z') == State::Enter)
-		Rotate(3);
-	if (Input::GetState('X') == State::Enter)
-		Rotate(1);
-	if (Input::GetState('A') == State::Enter)
-		Rotate(2);
+	MoveRotation();
 }
 
 void Tetromino::DrawTetromino(GConsole& screen)
@@ -225,7 +312,7 @@ void Tetromino::DrawTetromino(GConsole& screen)
 	while (DoesFit(*this, GetPosition().x, position.y))
 		position.y++;
 	position.y--;
-	
+
 	for (int y = 0; y < GetDimension().y; y++)
 	{
 		for (int x = 0; x < GetDimension().x; x++)
@@ -250,6 +337,58 @@ void Tetromino::IfCantMoveDown()
 	blockType = (Tetromino::Type)board.MoveNextList();
 	ChangeBlock(blockType);
 	board.SetCanHoldTetromino(true);
+}
+
+void Tetromino::IfRotationFits(int rotations, Vec2& offset)
+{
+	memcpy(this->GetBuffer(), rotateRect->GetBuffer(), sizeof(CHAR_INFO) * GetDimension().x * GetDimension().y);
+	rotationState += rotations % 4;
+	rotationState %= 4;
+	Move(offset);
+}
+
+void Tetromino::MoveVertically()
+{
+	unsigned long long fallSpeed = CalculateUpdateSpeed();
+	if (Input::GetKey(VK_DOWN).present)
+		fallSpeed /= 15;
+
+	if (updateClock->HasPassed(fallSpeed))
+	{
+		if (DoesFit(*this, GetPosition().x, GetPosition().y + 1))
+			Move(0, 1);
+		else
+			IfCantMoveDown();
+	}
+}
+
+void Tetromino::MoveHorizontally()
+{
+	if (Input::GetState(VK_LEFT) == State::Enter)
+	{
+		if (DoesFit(*this, GetPosition().x - 1, GetPosition().y))
+		{
+			Move(-1, 0);
+		}
+	}
+
+	if (Input::GetState(VK_RIGHT) == State::Enter)
+	{
+		if (DoesFit(*this, GetPosition().x + 1, GetPosition().y))
+		{
+			Move(1, 0);
+		}
+	}
+}
+
+void Tetromino::MoveRotation()
+{
+	if (Input::GetState('Z') == State::Enter)
+		Rotate(3);
+	if (Input::GetState('X') == State::Enter || Input::GetState(VK_UP) == State::Enter)
+		Rotate(1);
+	if (Input::GetState('A') == State::Enter)
+		Rotate(2);
 }
 
 void Tetromino::HoldTetromino()

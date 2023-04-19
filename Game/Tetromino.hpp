@@ -39,7 +39,6 @@ public:
 		CHAR_INFO* GetSprite(Type blockType);
 	};
 
-	//TO DO: Implement SRS
 private:
 	int rotationState;
 	Board& board;
@@ -47,8 +46,11 @@ private:
 	Sprite* sprite;
 	Rect* rotateRect;
 	Clock* updateClock;
-	Clock* horizontalMovementClock;
 	unsigned long long updateSpeed;
+
+	//SRS WALLKICK DATA
+	static std::vector<Vec2> JLZST_wallkickData;
+	static std::vector<Vec2> I_wallkickData;
 
 public:
 	Tetromino(int x, int y, Board& board);
@@ -59,11 +61,16 @@ public:
 	int  CalculateUpdateSpeed();
 	bool DoesFit(Rect& tetromino, int x, int y);
 	bool DoesFit(Rect& tetromino, Vec2 position);
-	//bool SRS();
+	void SRS(int rotations);
+	void InitSRS();
 	void Update();
 	void DrawTetromino(GConsole& screen);
 	void IfCantMoveDown();
+	void IfRotationFits(int rotations,Vec2& offset);
 	//Movement
+	void MoveVertically();
+	void MoveHorizontally();
+	void MoveRotation();
 	void HoldTetromino();
 	void HardDrop();
 };
