@@ -59,7 +59,6 @@ std::optional<CHAR_INFO> Rect::GetPixel(int x, int y) const
 		return buffer[y * short(dimension->x) + x];
 	}
 	return {};
-	//return std::optional<CHAR_INFO>();
 }
 
 std::optional<CHAR_INFO> Rect::GetPixel(Vec2 pos) const
