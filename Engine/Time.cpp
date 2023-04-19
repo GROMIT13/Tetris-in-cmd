@@ -51,6 +51,24 @@ unsigned int Clock::GetFPS(unsigned int UpdateRateMs)
 	return currentFPS;
 }
 
+//Retuns tickRate in miliseconds
+unsigned long long Clock::GetTickRate()
+{
+	return tickRate / 1000;
+}
+
+//Uses tickRate as time required to return true
+bool Clock::HasPassed()
+{
+	currentTime = std::chrono::high_resolution_clock::now();
+	if ((unsigned long long)(std::chrono::duration_cast<std::chrono::microseconds>(currentTime - lastTimeHasPassed).count()) > tickRate)
+	{
+		lastTimeHasPassed = std::chrono::high_resolution_clock::now();
+		return true;
+	}
+	return false;
+}
+
 bool Clock::HasPassed(unsigned long long timeMs)
 {
 	currentTime = std::chrono::high_resolution_clock::now();
@@ -60,4 +78,9 @@ bool Clock::HasPassed(unsigned long long timeMs)
 		return true;
 	}
 	return false;
+}
+
+void Clock::ResetHasPassed()
+{
+	lastTimeHasPassed = std::chrono::high_resolution_clock::now();
 }

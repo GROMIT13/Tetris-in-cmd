@@ -20,8 +20,11 @@ public:
 	static void Wait(unsigned long long ms);
 	Clock(unsigned long long tickRateMs);
 	~Clock();
+	unsigned long long GetTickRate();
 	unsigned long long GetPassedTime();
 	unsigned long long GetPassedTicks();
 	unsigned int GetFPS(unsigned int UpdateRateMs);
+	bool HasPassed();
 	bool HasPassed(unsigned long long timeMs);
+	void ResetHasPassed();
 };
