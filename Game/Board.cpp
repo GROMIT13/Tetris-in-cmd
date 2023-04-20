@@ -111,7 +111,8 @@ void Board::DrawBoard(GConsole& screen,const Tetromino& tetromino)
 	if (hasLost)
 	{
 		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 13, "YOU LOST!",FG_COLOR_LIGHT_RED);
-		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 14, "PRESS R TO RESTART",FG_COLOR_LIGHT_GREEN);
+		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 14, "PRESS R TO",FG_COLOR_LIGHT_GREEN);
+		screen.DrawString(GetPosition().x + GetDimension().x + 10, GetPosition().y + 15, "RESTART",FG_COLOR_LIGHT_GREEN);
 	}
 
 
