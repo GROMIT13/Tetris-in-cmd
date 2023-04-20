@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="Game\Board.cpp" />
     <ClCompile Include="Engine\DataStructures\Rect.cpp" />
     <ClCompile Include="Engine\DataStructures\vec.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="Game\Tetromino.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileLoader.hpp" />
     <ClInclude Include="Game\Board.hpp" />
     <ClInclude Include="Engine\DataStructures\Rect.hpp" />
     <ClInclude Include="Engine\DataStructures\vec.hpp" />
