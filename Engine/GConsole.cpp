@@ -22,7 +22,7 @@ GConsole::GConsole(const std::string& title, short screenWidth, short screenHeig
 
 	consoleDimensions = { 0, 0, 1, 1 };
 	if (!SetConsoleWindowInfo(hConsole, TRUE, &consoleDimensions)){
-		log.Error("failed to set Console Window Info 1");
+		log.Error("failed to set Console Window Info (console size) to 1 width ,1 height");
 	}
 
 	consoleBufferSzie = { screenWidth,screenHeight };
@@ -40,8 +40,21 @@ GConsole::GConsole(const std::string& title, short screenWidth, short screenHeig
 	}
 
 	consoleDimensions = { 0, 0, short(screenWidth - 1), short(screenHeight - 1) };
-	if (!SetConsoleWindowInfo(hConsole, TRUE, &consoleDimensions)){
-		log.Error("failed to set Console Window Info 2 (console size)");
+	while (!SetConsoleWindowInfo(hConsole, TRUE, &consoleDimensions)){
+		log.Error("failed to set Console Window Info (console size)");
+		log.Warn("Downscaling font width and height by 1");
+		if (consoleFont->dwFontSize.X > 2 && consoleFont->dwFontSize.Y > 2){
+			consoleFont->dwFontSize.X--;
+			consoleFont->dwFontSize.Y--;
+		}
+		else {
+			log.Error("Failed to downscale font");
+			break;
+		}
+
+		if (!SetCurrentConsoleFontEx(hConsole, TRUE, consoleFont)) {
+			log.Error("failed to set font size");
+		}
 	}
 
 	ShowConsoleCursor(false);
