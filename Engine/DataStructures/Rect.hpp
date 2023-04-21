@@ -94,6 +94,6 @@ public:
 	void DrawLine(int x0, int y0, int x1, int y1);
 	void DrawLine(int x0, int y0, int x1, int y1, unsigned short character, unsigned short color);
 
-public:
+private:
 	void UnsecureDraw(int x, int y, unsigned short character, unsigned short color);
 };
