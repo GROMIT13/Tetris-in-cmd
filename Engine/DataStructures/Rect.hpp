@@ -82,6 +82,8 @@ public:
 	void Draw(int x, int y);
 	void Draw(int x, int y, unsigned short character);
 	void Draw(int x, int y, unsigned short character, unsigned short color);
+	void FillArea(int x, int y,int width, int height,unsigned short character, unsigned short color);
+	void FillArea(int x, int y,int width, int height,unsigned short character);
 	void Fill(unsigned short character, unsigned short color);
 	void FillWithText(const std::string& string, unsigned short color);
 	void FillWithText(const std::string& string);

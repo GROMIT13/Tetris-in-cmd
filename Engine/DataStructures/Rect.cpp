@@ -123,6 +123,39 @@ void Rect::Draw(int x, int y, unsigned short character, unsigned short color)
 	}
 }
 
+void Rect::FillArea(int x, int y, int width, int height, unsigned short character, unsigned short color)
+{
+	// Bound checking if can draw
+	Vec2 begin(0, 0);
+	Vec2 end(width, height);
+	begin.x = (x < 0) ? (x * -1) : 0;
+	end.x = (dimension->x < x + width) ? end.x = dimension->x - x : end.x;
+	begin.y = (y < 0) ? (y * -1) : 0;
+	end.y = (dimension->y < y + height) ? end.y = dimension->y - y : end.y;
+	/*x = (x < 0) ? (x * -1) : 0;
+	width = (dimension->x < x + width) ? width = dimension->x - x : width;
+	y = (y < 0) ? (y * -1) : 0;
+	height = (dimension->y < y + height) ? height = dimension->y - y : height;*/
+
+	//Draw
+	for (int i = begin.y; i < end.y; i++)
+	{
+		for (int j = begin.x; j < end.x; j++)
+		{
+			UnsecureDraw(j + x, i + y, character, color);
+		}
+	}
+	//for (int i = y; i < height; i++)
+	//{
+	//	memcpy(this->buffer + i * this->dimension->x + x, buffer, sizeof(CHAR_INFO) * width);
+	//}
+}
+
+void Rect::FillArea(int x, int y, int width, int height, unsigned short character)
+{
+	FillArea(x, y, width, height, character, FG_COLOR_WHITE);
+}
+
 void Rect::Fill(unsigned short character, unsigned short color)
 {
 	for (int j = 0; j < dimension->y; j++)
